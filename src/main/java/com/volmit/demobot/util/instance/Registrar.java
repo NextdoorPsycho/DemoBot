@@ -52,13 +52,6 @@ public class Registrar extends ListenerAdapter {
         //Commands - General
 
 
-        final SlashClient slash = SlashClientBuilder
-                .create(jda)
-                .addCommand(new PingCommand()) // register the ping command
-                .build();
-        slash.getCommand("ping").upsertGuild(Core.get().discordID);
-
-
 
         jda.addEventListener(new CommandCore(jda)); // This one MUST be last
     }
