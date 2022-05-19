@@ -1,12 +1,11 @@
 package com.volmit.demobot;
 
 import art.arcane.quill.execution.Looper;
-import com.volmit.demobot.bot.util.instance.BotProvider;
-import com.volmit.demobot.bot.util.instance.IBotProvider;
-import com.volmit.demobot.bot.util.instance.Registrar;
-import com.volmit.demobot.bot.util.io.DataLoader;
-import com.volmit.demobot.bot.util.io.storage.FileSystemStorageAccess;
-import com.volmit.demobot.bot.Core;
+import com.volmit.demobot.util.instance.BotProvider;
+import com.volmit.demobot.util.instance.IBotProvider;
+import com.volmit.demobot.util.instance.Registrar;
+import com.volmit.demobot.util.io.DataLoader;
+import com.volmit.demobot.util.io.storage.FileSystemStorageAccess;
 import lombok.Getter;
 import lombok.NonNull;
 import net.dv8tion.jda.api.JDA;
@@ -55,6 +54,7 @@ public class Demo extends ListenerAdapter {
         loader = new DataLoader(new FileSystemStorageAccess(new File("Data/BotData")));
 
         System.out.println("Initializing");
+
         Core.get().botID = getJDA().getSelfUser().getIdLong();
         Core.get().botUser = getJDA().getUserById(Core.get().botID);
         Core.get().botName = Objects.requireNonNull(Core.get().botUser).getName();

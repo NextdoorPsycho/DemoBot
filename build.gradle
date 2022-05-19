@@ -24,6 +24,7 @@ repositories {
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    implementation 'com.github.azzerial.slash-commands:api:1.1'
     implementation 'net.dv8tion:JDA:5.0.0-alpha.12'
     implementation 'com.github.pemistahl:lingua:1.1.1'
     implementation 'com.github.ArcaneArts:Quill:1.1.3'
