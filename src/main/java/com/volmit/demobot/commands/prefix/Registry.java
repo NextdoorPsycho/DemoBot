@@ -1,28 +1,10 @@
-/*
- * Abyssalith is a Discord Bot for Volmit Software's Community
- * Copyright (c) 2021 VolmitSoftware (Arcane Arts)
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-package com.volmit.demobot.util.instance;
+ 
+package com.volmit.demobot.commands.prefix;
 
-import com.jagrosh.jdautilities.examples.command.PingCommand;
 import com.volmit.demobot.Demo;
-import com.volmit.demobot.commands.prefix.Shutdown;
 import com.volmit.demobot.Core;
-import net.azzerial.slash.SlashClient;
-import net.azzerial.slash.SlashClientBuilder;
+import com.volmit.demobot.util.instance.CommandCore;
+import com.volmit.demobot.util.instance.SkipCommand;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -36,12 +18,11 @@ import java.util.List;
 import java.util.Objects;
 
 @SkipCommand
-public class Registrar extends ListenerAdapter {
-
+public class Registry extends ListenerAdapter {
     /**
      * Command package path. Recursively searched for commands not annotated by {@link SkipCommand}
      */
-    private static final String commandPackagePath = Registrar.class.getPackage().getName();
+    private static final String commandPackagePath = Registry.class.getPackage().getName();
 
     public static void All(JDA jda) {
         // Main bits, Regardless of platform
@@ -51,22 +32,20 @@ public class Registrar extends ListenerAdapter {
 
         //Commands - General
 
+        //SlashCommands - General
 
 
+        //END
         jda.addEventListener(new CommandCore(jda)); // This one MUST be last
     }
 
-    /**
-     * Register all commands
-     * @param jda the {@link JDA} to register to
-     */
+
     private static void registerAllCommands(String packagePath, JDA jda) throws NullPointerException, IOException {
 
         // Get stream of class data
         InputStream stream = ClassLoader.getSystemClassLoader()
                 .getResourceAsStream(packagePath.replaceAll("[.]", "/"));
 
-        // If stream not accessible (null)
         if (stream == null) {
             throw new NullPointerException("Command loading, package not found: " + packagePath);
         }
@@ -112,12 +91,7 @@ public class Registrar extends ListenerAdapter {
         Demo.debug("Loaded " + (loadedCommands.isEmpty() ? "NONE" : String.join(", ", loadedCommands)) + " from package " + packagePath);
     }
 
-    /**
-     * Get a command class from a class name and package.
-     * @param className name of the class
-     * @param packageName path to the package
-     * @return the class or null if not a {@link ListenerAdapter}
-     */
+
     private static Class<?> getCommandClass(String className, String packageName) {
         try {
             Class<?> c = Class.forName(packageName + "."

@@ -4,6 +4,7 @@ package com.volmit.demobot.commands.prefix;
 import com.volmit.demobot.Demo;
 import com.volmit.demobot.util.VolmitCommand;
 import com.volmit.demobot.Core;
+import com.volmit.demobot.util.instance.BotInstance;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.List;
