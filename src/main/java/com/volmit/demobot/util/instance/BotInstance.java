@@ -1,10 +1,8 @@
 package com.volmit.demobot.util.instance;
 
-import com.jagrosh.jdautilities.examples.command.PingCommand;
 import com.volmit.demobot.Demo;
 import com.volmit.demobot.Core;
-import net.azzerial.slash.SlashClient;
-import net.azzerial.slash.SlashClientBuilder;
+
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
