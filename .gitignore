@@ -6,3 +6,5 @@ Data/
 .idea/
 
 .gradle/
+
+build/
