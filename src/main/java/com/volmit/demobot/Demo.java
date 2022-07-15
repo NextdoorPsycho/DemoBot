@@ -3,7 +3,7 @@ package com.volmit.demobot;
 import art.arcane.quill.execution.Looper;
 import com.volmit.demobot.util.instance.BotProvider;
 import com.volmit.demobot.util.instance.IBotProvider;
-import com.volmit.demobot.commands.prefix.Registry;
+import com.volmit.demobot.commands.CommandRegistry;
 import com.volmit.demobot.util.io.DataLoader;
 import com.volmit.demobot.util.io.storage.FileSystemStorageAccess;
 import lombok.Getter;
@@ -43,7 +43,7 @@ public class Demo extends ListenerAdapter {
 
 
     public static void main(String[] args) {
-        //This sets the threading priorities to work on Droplet :(
+        //This sets the threading priorities to work on Droplet :( This is not safe but it works
         final int cores = Runtime.getRuntime().availableProcessors();
         if (cores <= 1) {
             System.out.println("Available Cores \"" + cores + "\", Attempting to set Parallelism Flag");
@@ -58,7 +58,7 @@ public class Demo extends ListenerAdapter {
         Core.get().botID = getJDA().getSelfUser().getIdLong();
         Core.get().botUser = getJDA().getUserById(Core.get().botID);
         Core.get().botName = Objects.requireNonNull(Core.get().botUser).getName();
-        Registry.All(getJDA()); // ALL COMMANDS ARE HERE
+        CommandRegistry.All(getJDA()); // ALL COMMANDS ARE HERE
 
         new Looper() {
             @Override
@@ -73,9 +73,8 @@ public class Demo extends ListenerAdapter {
 
     @Override
     public void onReady(@NonNull ReadyEvent e) {
-        System.out.println(e.getJDA().getSelfUser().getAsTag()+" IS WATCHING THE UNIVERSE");
-
-        info("BOT HAS STARTED!");
+        System.out.println(e.getJDA().getSelfUser().getAsTag()+" Initialized!");
+        info("Bot has Started: Active Monitoring");
     }
 
     public static void shutdown() {

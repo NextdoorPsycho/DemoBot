@@ -1,4 +1,4 @@
-package com.volmit.demobot.commands.prefix;
+package com.volmit.demobot.commands;
 
 
 import com.volmit.demobot.Demo;

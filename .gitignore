@@ -1,2 +1,8 @@
 
 Data/
+
+.gradle/buildOutputCleanup/
+
+.idea/
+
+.gradle/

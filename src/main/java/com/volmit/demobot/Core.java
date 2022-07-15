@@ -8,6 +8,7 @@ import art.arcane.quill.json.JSONObject;
 import art.arcane.quill.logging.L;
 import com.google.gson.Gson;
 import com.volmit.demobot.util.Range;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -18,6 +19,8 @@ public class Core extends ListenerAdapter {
 
 
     // Set from config
+    public String botStartupMessage = "Bot has Started";
+    public String botSelfPersistence = "Watching for Messages!";
     public String botToken = ""; // LEAVE BLANK FOR TOKEN
     public String botCompany = "VolmitSoftware";
     public String discordID = "";

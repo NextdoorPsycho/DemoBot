@@ -6,6 +6,7 @@ import com.volmit.demobot.Core;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -128,7 +129,8 @@ public class VolmitEmbed extends EmbedBuilder {
             List<String> finalReactions = reactions;
             message.getChannel().sendMessageEmbeds(this.build()).queue(msg -> {
                 for (String emoji : finalReactions) {
-                    msg.addReaction(emoji).queue();
+                    Emoji emoji1 = Emoji.fromFormatted(emoji);
+                    msg.addReaction(emoji1).queue();
                 }
             });
             if (deleteMSG) {
@@ -138,7 +140,8 @@ public class VolmitEmbed extends EmbedBuilder {
             List<String> finalReactions = reactions;
             channel.sendMessageEmbeds(this.build()).queue(msg -> {
                 for (String emoji : finalReactions) {
-                    msg.addReaction(emoji).queue();
+                    Emoji emoji1 = Emoji.fromFormatted(emoji);
+                    msg.addReaction(emoji1).queue();
                 }
             });
         }

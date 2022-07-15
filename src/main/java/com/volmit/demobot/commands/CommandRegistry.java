@@ -1,5 +1,5 @@
  
-package com.volmit.demobot.commands.prefix;
+package com.volmit.demobot.commands;
 
 import com.volmit.demobot.Demo;
 import com.volmit.demobot.Core;
@@ -18,11 +18,11 @@ import java.util.List;
 import java.util.Objects;
 
 @SkipCommand
-public class Registry extends ListenerAdapter {
+public class CommandRegistry extends ListenerAdapter {
     /**
      * Command package path. Recursively searched for commands not annotated by {@link SkipCommand}
      */
-    private static final String commandPackagePath = Registry.class.getPackage().getName();
+    private static final String commandPackagePath = CommandRegistry.class.getPackage().getName();
 
     public static void All(JDA jda) {
         // Main bits, Regardless of platform
