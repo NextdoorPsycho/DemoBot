@@ -26,6 +26,7 @@ public class User implements DataType {
     private long messagesSent = 0;
     private long reactions = 0;
     private Set<String> roleIds = new HashSet<>();
+    private Set<Integer> ticketIds = new HashSet<>();
     HashMap<Integer, String> warnings = new HashMap<>();
     HashMap<Integer, String> recentMentions = new HashMap<>();
 

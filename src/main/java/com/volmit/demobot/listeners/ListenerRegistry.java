@@ -1,10 +1,11 @@
  
-package com.volmit.demobot.commands;
+package com.volmit.demobot.listeners;
 
 import com.volmit.demobot.Core;
 import com.volmit.demobot.Demo;
-import com.volmit.demobot.commands.prefix.Passive;
-import com.volmit.demobot.commands.prefix.Shutdown;
+import com.volmit.demobot.listeners.prefix.Passive;
+import com.volmit.demobot.listeners.prefix.Shutdown;
+import com.volmit.demobot.listeners.slash.TicketMasterButton;
 import com.volmit.demobot.util.instance.CommandCore;
 import com.volmit.demobot.util.instance.SkipCommand;
 import net.dv8tion.jda.api.JDA;
@@ -20,11 +21,11 @@ import java.util.List;
 import java.util.Objects;
 
 @SkipCommand
-public class CommandRegistry extends ListenerAdapter {
+public class ListenerRegistry extends ListenerAdapter {
     /**
      * Command package path. Recursively searched for commands not annotated by {@link SkipCommand}
      */
-    private static final String commandPackagePath = CommandRegistry.class.getPackage().getName();
+    private static final String commandPackagePath = ListenerRegistry.class.getPackage().getName();
 
 
     /**
@@ -38,6 +39,9 @@ public class CommandRegistry extends ListenerAdapter {
         jda.addEventListener(new Core()); // [ DONT TOUCH THESE  LISTENERS ]
         jda.addEventListener(new Shutdown()); // [ DONT TOUCH THESE  LISTENERS ]
         jda.addEventListener(new Passive());
+
+        //Listeners
+        jda.addEventListener(new TicketMasterButton());
 
         //END
         jda.addEventListener(new CommandCore(jda)); // [ DONT TOUCH THESE  LISTENERS ]
