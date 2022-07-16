@@ -8,7 +8,6 @@ import art.arcane.quill.json.JSONObject;
 import art.arcane.quill.logging.L;
 import com.google.gson.Gson;
 import com.volmit.demobot.util.Range;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -19,14 +18,15 @@ public class Core extends ListenerAdapter {
 
 
     // Set from config
-    public String botStartupMessage = "Bot has Started";
-    public String botSelfPersistence = "Watching for Messages!";
+    public String botOnReadyMessage = "Bot has Started";
+    public String botActivityMessage = "The Universe: .?";
+    public String botInstanceMessage = "Watching for Messages!";
     public String botToken = ""; // LEAVE BLANK FOR TOKEN
     public String botCompany = "VolmitSoftware";
-    public String discordID = "";
+    public String discordGuildID = "";
     public String botColor = "0x000000";
     public String botOwnerID = "PutYourIdHere"; // ME
-    public String botIMG = "";
+    public String botIMG = "https://i.imgur.com/TpCn8vW.png"; // Cat pic
     public String botPrefix = ".";
     public String adminControllerRole = "ModRole";
     public Range xpPerMessage = Range.jitter(0.85f, 0.15f);

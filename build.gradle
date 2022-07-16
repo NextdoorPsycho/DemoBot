@@ -5,7 +5,6 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.0.0"
 }
 
-def name = 'DemoBot'
 group 'com.volmit'
 application {
     mainClass = 'com.volmit.demobot.Demo'
@@ -14,7 +13,7 @@ application {
 
 repositories {
     mavenCentral()
-    maven { url "https://m2.chew.pro/releases" }
+    maven { url = uri("https://m2.chew.pro/snapshots") }
     maven { url "https://dl.cloudsmith.io/public/arcane/archive/maven/" }
 
 }
@@ -25,15 +24,14 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
 
     //Discord JDA stuff
+    implementation'pw.chew:jda-chewtils:2.0-SNAPSHOT'
     implementation 'net.dv8tion:JDA:5.0.0-alpha.13'
-    implementation 'pw.chew:jda-chewtils:1.24.1' // https://github.com/Chew/JDA-Chewtils/wiki/Features
-    implementation 'com.discord4j:discord4j-core:3.2.2' // https://discord4j.com/
+
 
     //My things
-    implementation 'org.slf4j:slf4j-api:2.0.0-alpha6'
-    implementation 'org.slf4j:slf4j-simple:2.0.0-alpha6'
+    implementation 'org.slf4j:slf4j-api:2.0.0-alpha7'
+    implementation 'org.slf4j:slf4j-simple:2.0.0-alpha7'
     implementation 'org.jsoup:jsoup:1.14.3'
-    implementation 'com.discord4j:discord4j-core:3.2.2'
     implementation 'redis.clients:jedis:4.2.3'
 
     //Cancer, cancer, cancer.

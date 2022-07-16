@@ -81,6 +81,7 @@ public class CommandCore extends VolmitCommand {
         }
 
         // Send the embed
+        embed.setFooter(Core.get().botCompany, Core.get().botIMG);
         embed.send(e.getMessage(), true, 1000);
     }
 

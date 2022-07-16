@@ -163,6 +163,7 @@ public class VolmitCommand extends ListenerAdapter {
         if (getRoles() != null && getRoles().size() != 0) {
             embed.addField("**Permitted for role(s)**", "`" + getRoles().toString() + "`", false);
         }
+        embed.setFooter(Core.get().botCompany, Core.get().botIMG);
         embed.send(message);
     }
     protected void sendCategoryHelp(Message message) {
@@ -190,6 +191,7 @@ public class VolmitCommand extends ListenerAdapter {
                 );
             }
         });
+        embed.setFooter(Core.get().botCompany, Core.get().botIMG);
         embed.send(message);
     }
 }

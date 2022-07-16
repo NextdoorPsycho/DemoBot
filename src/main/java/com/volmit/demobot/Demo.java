@@ -1,9 +1,9 @@
 package com.volmit.demobot;
 
 import art.arcane.quill.execution.Looper;
+import com.volmit.demobot.commands.CommandRegistry;
 import com.volmit.demobot.util.instance.BotProvider;
 import com.volmit.demobot.util.instance.IBotProvider;
-import com.volmit.demobot.commands.CommandRegistry;
 import com.volmit.demobot.util.io.DataLoader;
 import com.volmit.demobot.util.io.storage.FileSystemStorageAccess;
 import lombok.Getter;
@@ -73,7 +73,8 @@ public class Demo extends ListenerAdapter {
 
     @Override
     public void onReady(@NonNull ReadyEvent e) {
-        System.out.println(e.getJDA().getSelfUser().getAsTag()+" Initialized!");
+        e.getJDA().updateCommands().queue();
+        System.out.println(e.getJDA().getSelfUser().getAsTag()+ Core.get().botOnReadyMessage);
         info("Bot has Started: Active Monitoring");
     }
 

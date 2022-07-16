@@ -1,6 +1,5 @@
 package com.volmit.demobot.commands;
 
-
 import com.volmit.demobot.Demo;
 import com.volmit.demobot.util.VolmitCommand;
 import com.volmit.demobot.Core;
