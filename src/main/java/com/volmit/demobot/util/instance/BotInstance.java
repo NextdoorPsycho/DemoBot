@@ -2,10 +2,10 @@ package com.volmit.demobot.util.instance;
 
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
-import com.volmit.demobot.Demo;
 import com.volmit.demobot.Core;
-
+import com.volmit.demobot.Demo;
 import com.volmit.demobot.commands.slash.PingCommand;
+import com.volmit.demobot.commands.slash.TicketMaster;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -27,12 +27,17 @@ public class BotInstance {
             System.exit(0);
         }
         CommandClientBuilder builder = new CommandClientBuilder();// [DONT TOUCH]
-        builder.addSlashCommand(new PingCommand());//Slash commands - General
+        // Slash Commands Below:
+        builder.addSlashCommand(new PingCommand());
+        builder.addSlashCommand(new TicketMaster());
 
-        builder.forceGuildOnly(Core.get().discordGuildID); // This is the guild ID of the bot for the bot to only be able to use commands in this guild.
-        builder.setOwnerId(Core.get().botOwnerID); // This is the owner ID of the bot.
+
+
+
+        // End of Slash Commands
+        builder.forceGuildOnly(Core.get().discordGuildID);
+        builder.setOwnerId(Core.get().botOwnerID);
         CommandClient commandClient = builder.build();
-
         jda = JDABuilder.createDefault(s)
                 .setChunkingFilter(ChunkingFilter.ALL) // enable member chunking for all guilds
                 .setMemberCachePolicy(MemberCachePolicy.ALL) // ignored if chunking enabled

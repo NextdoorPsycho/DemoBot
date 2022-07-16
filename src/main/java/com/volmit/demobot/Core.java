@@ -7,7 +7,7 @@ import art.arcane.quill.io.IO;
 import art.arcane.quill.json.JSONObject;
 import art.arcane.quill.logging.L;
 import com.google.gson.Gson;
-import com.volmit.demobot.util.Range;
+import com.volmit.demobot.util.io.Range;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 

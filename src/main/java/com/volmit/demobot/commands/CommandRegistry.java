@@ -4,6 +4,7 @@ package com.volmit.demobot.commands;
 import com.volmit.demobot.Core;
 import com.volmit.demobot.Demo;
 import com.volmit.demobot.commands.prefix.Passive;
+import com.volmit.demobot.commands.prefix.Shutdown;
 import com.volmit.demobot.util.instance.CommandCore;
 import com.volmit.demobot.util.instance.SkipCommand;
 import net.dv8tion.jda.api.JDA;
@@ -25,20 +26,21 @@ public class CommandRegistry extends ListenerAdapter {
      */
     private static final String commandPackagePath = CommandRegistry.class.getPackage().getName();
 
+
+    /**
+     * All Slash commands:
+     * {@link com.volmit.demobot.util.instance.BotInstance}
+     * need to be added like this:
+     * builder.addSlashCommand(new PingCommand());
+     */
     public static void All(JDA jda) {
-        // Main bits, Regardless of platform
         jda.addEventListener(new Demo()); // [ DONT TOUCH THESE  LISTENERS ]
         jda.addEventListener(new Core()); // [ DONT TOUCH THESE  LISTENERS ]
         jda.addEventListener(new Shutdown()); // [ DONT TOUCH THESE  LISTENERS ]
-
-
-        //Commands - General
         jda.addEventListener(new Passive());
 
-
-
         //END
-        jda.addEventListener(new CommandCore(jda)); // This one MUST be last
+        jda.addEventListener(new CommandCore(jda)); // [ DONT TOUCH THESE  LISTENERS ]
     }
 
 
