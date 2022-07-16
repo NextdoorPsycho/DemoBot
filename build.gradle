@@ -33,6 +33,7 @@ dependencies {
     implementation 'org.slf4j:slf4j-simple:2.0.0-alpha7'
     implementation 'org.jsoup:jsoup:1.14.3'
     implementation 'redis.clients:jedis:4.2.3'
+    implementation 'commons-io:commons-io:2.11.0'
 
     //Cancer, cancer, cancer.
     implementation 'art.arcane:Amulet:22.7.18'
