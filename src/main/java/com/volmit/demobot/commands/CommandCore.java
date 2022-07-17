@@ -1,9 +1,9 @@
-package com.volmit.demobot.util.instance;
+package com.volmit.demobot.commands;
 
 import com.volmit.demobot.Demo;
 import com.volmit.demobot.Core;
-import com.volmit.demobot.util.VolmitCommand;
 import com.volmit.demobot.util.VolmitEmbed;
+import com.volmit.demobot.util.instance.SkipCommand;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -95,7 +95,7 @@ public class CommandCore extends VolmitCommand {
     public List<VolmitCommand> processCMDs(JDA jda) {
         List<VolmitCommand> foundCommands = new ArrayList<>();
         jda.getRegisteredListeners().forEach(c -> {
-
+            //package with commands!
             if (c instanceof VolmitCommand && c.getClass().getPackageName().contains(".commands")) {
                 foundCommands.add((VolmitCommand) c);
             }

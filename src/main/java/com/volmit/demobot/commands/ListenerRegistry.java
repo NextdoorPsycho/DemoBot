@@ -1,12 +1,11 @@
  
-package com.volmit.demobot.listeners;
+package com.volmit.demobot.commands;
 
 import com.volmit.demobot.Core;
 import com.volmit.demobot.Demo;
-import com.volmit.demobot.listeners.prefix.Passive;
-import com.volmit.demobot.listeners.prefix.Shutdown;
-import com.volmit.demobot.listeners.slash.TicketMasterButton;
-import com.volmit.demobot.util.instance.CommandCore;
+import com.volmit.demobot.commands.prefix.Passive;
+import com.volmit.demobot.commands.prefix.Shutdown;
+import com.volmit.demobot.commands.slash.TicketMasterButton;
 import com.volmit.demobot.util.instance.SkipCommand;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

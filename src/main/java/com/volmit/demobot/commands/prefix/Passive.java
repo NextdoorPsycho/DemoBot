@@ -1,7 +1,7 @@
-package com.volmit.demobot.listeners.prefix;
+package com.volmit.demobot.commands.prefix;
 
 import com.volmit.demobot.Demo;
-import com.volmit.demobot.util.VolmitCommand;
+import com.volmit.demobot.commands.VolmitCommand;
 import com.volmit.demobot.util.VolmitEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 

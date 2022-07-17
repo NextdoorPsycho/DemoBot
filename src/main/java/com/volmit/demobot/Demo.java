@@ -1,7 +1,7 @@
 package com.volmit.demobot;
 
 import art.arcane.quill.execution.Looper;
-import com.volmit.demobot.listeners.ListenerRegistry;
+import com.volmit.demobot.commands.ListenerRegistry;
 import com.volmit.demobot.util.instance.BotProvider;
 import com.volmit.demobot.util.instance.IBotProvider;
 import com.volmit.demobot.util.io.DataLoader;

@@ -1,9 +1,10 @@
 
-package com.volmit.demobot.util;
+package com.volmit.demobot.commands;
 
 
 import com.volmit.demobot.Demo;
 import com.volmit.demobot.Core;
+import com.volmit.demobot.util.VolmitEmbed;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
