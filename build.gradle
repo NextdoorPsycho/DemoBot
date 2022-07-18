@@ -25,7 +25,7 @@ dependencies {
 
     //Discord JDA stuff
     implementation'pw.chew:jda-chewtils:2.0-SNAPSHOT'
-    implementation 'net.dv8tion:JDA:5.0.0-alpha.13'
+    implementation 'net.dv8tion:JDA:5.0.0-alpha.15'
 
 
     //My things
