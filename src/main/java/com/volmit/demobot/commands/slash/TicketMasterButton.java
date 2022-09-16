@@ -153,14 +153,14 @@ public class TicketMasterButton extends ListenerAdapter {
         embed.setTitle("Welcome to the Ticket center!");
         embed.setTimestamp(new Date().toInstant());
         embed.setDescription("If you want to create a ticket, all you need to do is click the button below!\n" +
-                "If you make a ticket you will be given a custom chat and space to talk probate to you, " +
+                "If you make a ticket you will be given a custom chat and space to talk private with you, " +
                 "and the people who are able to help with tickets. you can always do !close to close the " +
-                "tickets, or press t he button! that's created when you get the chat!");
+                "tickets, or press the button! that's created when you get the chat!");
         embed.setFooter("Current Tickets: " + (int) botData.money(), Core.get().botIMG);
         Button button = Button.success("create-ticket", "[\u2800 \u2800 \u2800 \u2800 Click for a Ticket\u2800 \u2800 \u2800 \u2800]");
         textChannel.sendMessageEmbeds(embed.build())
                 .setActionRow(button)
-                .queue();
+                .queue(m -> m.pin().queue());
     }
 
     public static void remakeEmbedMessage(TextChannel textChannel) {
