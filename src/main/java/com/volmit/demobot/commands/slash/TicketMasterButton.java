@@ -50,8 +50,8 @@ public class TicketMasterButton extends ListenerAdapter {
         Guild g = m.getGuild();
         TextChannel channel = g.getTextChannelsByName("ticket-" + ticketId, true).get(0);
 
-        String jarPath = System.getProperty("java.io.tmpdir") + "ticket-" + ticketId + ".txt";
-        File path = new File(jarPath);
+        File path = new File("Tickets/ticket-" + ticketId + ".txt");
+        path.getParentFile().mkdirs();
         PrintWriter printWriter = new PrintWriter(path);
 
         MessageHistory history = channel.getHistoryFromBeginning(100).complete();
@@ -89,7 +89,7 @@ public class TicketMasterButton extends ListenerAdapter {
         m.getUser().openPrivateChannel().complete().sendFiles(FileUpload.fromData(path)).queue();
         e.reply("Ticket closed!").setEphemeral(true).queue();
         if (path.delete()) {
-            Demo.info("Deleted file: " + jarPath);
+            Demo.info("Deleted file: Tickets/ticket-" + ticketId + ".txt");
         }
 
 
