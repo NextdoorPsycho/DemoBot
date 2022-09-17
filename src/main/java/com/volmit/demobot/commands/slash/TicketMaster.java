@@ -41,11 +41,11 @@ public class TicketMaster extends SlashCommand {
         }
         if (category == null) {
             g.createCategory("Tickets").queue(t -> {
-
                 g.createTextChannel("ticket-hub", t)
                         .addRolePermissionOverride(g.getRolesByName(Core.get().adminControllerRole, false).get(0).getIdLong(), Collections.singleton(Permission.VIEW_CHANNEL), null)
                         .addRolePermissionOverride(g.getRolesByName(Core.get().supportControllerRole, false).get(0).getIdLong(), Collections.singleton(Permission.VIEW_CHANNEL), null)
-                        .addRolePermissionOverride(g.getPublicRole().getIdLong(), null, Collections.singleton(Permission.VIEW_CHANNEL))
+                        .addRolePermissionOverride(g.getPublicRole().getIdLong(), null, Collections.singleton(Permission.MESSAGE_SEND))
+                        .addRolePermissionOverride(g.getPublicRole().getIdLong(),  Collections.singleton(Permission.MESSAGE_ADD_REACTION), null)
                         .queue(TicketMasterButton::makeTicketEmbedMessage);
                 g.createTextChannel("ticket-logs", t)
                         .addRolePermissionOverride(g.getRolesByName(Core.get().adminControllerRole, false).get(0).getIdLong(), Collections.singleton(Permission.VIEW_CHANNEL), null)
@@ -57,6 +57,5 @@ public class TicketMaster extends SlashCommand {
         }
         //TODO: Permissions setup for the category
     }
-
 }
 

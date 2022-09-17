@@ -71,20 +71,8 @@ public class TicketMasterButton extends ListenerAdapter {
         printWriter.flush();
         printWriter.close();
 
-//        if (e.getGuild() != null
-//                && e.getGuild().getTextChannelsByName("ticket-logs", true).get(0) != null) {
-        e.getGuild().getTextChannelsByName("ticket-logs", true).get(0).sendFiles(FileUpload.fromData(path)).queue();
-//        } else {
-//            e.getGuild().createTextChannel("ticket-logs", e.getGuild().getCategoriesByName("Tickets", false).get(0)).queue(t -> {
-//                t.getManager().setType(ChannelType.TEXT).queue();
-//                t.getManager().putPermissionOverride(e.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL)).queue();
-//                t.getManager().putPermissionOverride(e.getGuild().getRolesByName("Administrator", true).get(0), EnumSet.of(Permission.VIEW_CHANNEL), null).queue();
-//                t.getManager().putPermissionOverride(e.getGuild().getRolesByName("Support", true).get(0), EnumSet.of(Permission.VIEW_CHANNEL), null).queue();
-//                t.sendMessage("Closed By User: " + m.getEffectiveName()).queue();
-//                t.sendFiles(FileUpload.fromData(path)).queue();
-//            });
-//        }
 
+        e.getGuild().getTextChannelsByName("ticket-logs", true).get(0).sendFiles(FileUpload.fromData(path)).queue();
         m.getUser().openPrivateChannel().queue(channel1 -> channel1.sendMessage("Your ticket has been logged!").queue());
         m.getUser().openPrivateChannel().complete().sendFiles(FileUpload.fromData(path)).queue();
         e.reply("Ticket closed!").setEphemeral(true).queue();
@@ -124,23 +112,23 @@ public class TicketMasterButton extends ListenerAdapter {
                     .addRolePermissionOverride(g.getPublicRole().getIdLong(), null, Collections.singleton(Permission.VIEW_CHANNEL))
                     .addPermissionOverride(m, Collections.singleton(Permission.VIEW_CHANNEL), null)
                     .queue(chat -> {
-                EmbedBuilder embed = new VolmitEmbed();
-                embed.setTitle("Welcome to your ticket!");
-                embed.setTimestamp(new Date().toInstant());
-                embed.setDescription(
-                        "Welcome to your own personal dimension for Everything you need in Volmit in one place\n" +
-                                "If you want to close the ticket, just click the close button right below this message!\n " +
-                                "it's pinned, so you can always come back\n" +
-                                " " +
-                                "*PLEASE NOTE THAT IF YOU ARE MAKING ANY MONEY RELATED QUERIES, OR TRANSACTIONS; WE ARE NOT " +
-                                "RESPONSIBLE FOR ANYTHING THAT CAN HAPPEN, ALL TRANSACTIONS ARE DONE AT YOUR OWN RISK, AND " +
-                                "VOLMIT WILL NOT BE HELD RESPONSIBLE FOR INTRAPERSONAL SALES OR TRANSACTIONS, WE ARE MERELY " +
-                                "A MEDIUM WITH ZERO LIABILITY; AND WE WILL NOT BE HELD RESPONSIBLE FOR ANYTHING THAT HAPPENS.*");
+                        EmbedBuilder embed = new VolmitEmbed();
+                        embed.setTitle("Welcome to your ticket!");
+                        embed.setTimestamp(new Date().toInstant());
+                        embed.setDescription(
+                                "Welcome to your own personal dimension for Everything you need in Volmit in one place\n" +
+                                        "If you want to close the ticket, just click the close button right below this message!\n " +
+                                        "it's pinned, so you can always come back\n" +
+                                        " " +
+                                        "*PLEASE NOTE THAT IF YOU ARE MAKING ANY MONEY RELATED QUERIES, OR TRANSACTIONS; WE ARE NOT " +
+                                        "RESPONSIBLE FOR ANYTHING THAT CAN HAPPEN, ALL TRANSACTIONS ARE DONE AT YOUR OWN RISK, AND " +
+                                        "VOLMIT WILL NOT BE HELD RESPONSIBLE FOR INTRAPERSONAL SALES OR TRANSACTIONS, WE ARE MERELY " +
+                                        "A MEDIUM WITH ZERO LIABILITY; AND WE WILL NOT BE HELD RESPONSIBLE FOR ANYTHING THAT HAPPENS.*");
 
-                Button button = Button.danger("close-ticket", "[ Click to close Ticket ]");
-                chat.sendMessage(m.getAsMention() + " has been added to the ticket!").queue();
-                chat.sendMessageEmbeds(embed.build()).setActionRow(button).queue(msg -> msg.pin().queue());
-            });
+                        Button button = Button.danger("close-ticket", "[ Click to close Ticket ]");
+                        chat.sendMessage(m.getAsMention() + " has been added to the ticket!").queue();
+                        chat.sendMessageEmbeds(embed.build()).setActionRow(button).queue(msg -> msg.pin().queue());
+                    });
             u.ticketIds().add(ticketNumber);
             Demo.info("Created ticket for " + m.getUser().getName() + " with id :" + ticketNumber);
 
@@ -155,30 +143,37 @@ public class TicketMasterButton extends ListenerAdapter {
     private void closeTicket(ButtonInteractionEvent e) {
         Member m = e.getMember();
         User botData = Demo.getLoader().getUser(1000000001);
+        TextChannel tc = e.getChannel().asTextChannel();
+        String tcid = tc.getName();
         User u = Demo.getLoader().getUser(m.getUser().getIdLong());
-        u.ticketIds().forEach(id -> {
-            if (e.getChannel().getName().contains(id) && (m.getRoles().contains(m.getGuild().getRolesByName("Administrator", false).get(0)) || m.getRoles().contains(m.getGuild().getRolesByName("Support", false).get(0)))/*|| is Admin Check*/) {
+
+
+        if (u.ticketIds().contains(tcid) || (m.getRoles().contains(m.getGuild().getRolesByName("Administrator", false).get(0)) || m.getRoles().contains(m.getGuild().getRolesByName("Support", false).get(0)))) {
+            try {
+                createTicketLog(e, tcid);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            e.getChannel().delete().queue(d -> {
+                for (Member mem : tc.getMembers()) {
+                    User cUsers = Demo.getLoader().getUser(mem.getUser().getIdLong());
+                    Demo.info("Removed: " + tcid + "from: " + mem);
+                    cUsers.ticketIds().remove(tcid);
+                }
+                Demo.info("Closed ticket for " + m.getUser().getName() + " ID: " + tcid);
+            });
+
+            botData.money(botData.money() - 1);
+            J.a(() -> {
                 try {
-                    createTicketLog(e, id);
-                } catch (IOException ex) {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
-                e.getChannel().delete().queue(d -> {
-                    u.ticketIds().remove(id);
-                    Demo.info("Closed ticket for " + m.getUser().getName() + " ID: " + id);
-                });
+                remakeEmbedMessage(m.getGuild().getTextChannelsByName("ticket-hub", true).get(0));
+            });
+        }
 
-                botData.money(botData.money() - 1);
-                J.a(() -> {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                    remakeEmbedMessage(m.getGuild().getTextChannelsByName("ticket-hub", true).get(0));
-                });
-            }
-        });
     }
 
 
