@@ -21,7 +21,7 @@ import java.util.Set;
 public class User implements DataType {
     private long id = 0;
     private double experience = 0.0f;
-    private double money = 0.00f;
+    private double money = 0f;
 
     private long messagesSent = 0;
     private long reactions = 0;

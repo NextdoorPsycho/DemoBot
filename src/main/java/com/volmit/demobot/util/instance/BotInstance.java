@@ -4,8 +4,7 @@ import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.volmit.demobot.Core;
 import com.volmit.demobot.Demo;
-import com.volmit.demobot.commands.slash.PingCommand;
-import com.volmit.demobot.commands.slash.TicketMaster;
+import com.volmit.demobot.commands.slash.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -30,6 +29,10 @@ public class BotInstance {
         // Slash Commands Below:
         builder.addSlashCommand(new PingCommand());
         builder.addSlashCommand(new TicketMaster());
+        builder.addSlashCommand(new LogCommand());
+        builder.addSlashCommand(new ChunkyStatement());
+        builder.addSlashCommand(new LinkCommand());
+        builder.addSlashCommand(new PasteServicesCommand());
 
 
 

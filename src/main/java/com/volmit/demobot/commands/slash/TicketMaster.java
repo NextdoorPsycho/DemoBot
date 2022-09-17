@@ -20,6 +20,8 @@ public class TicketMaster extends SlashCommand {
 
         List<OptionData> options = new ArrayList<>();
         this.options = options; // Add options to a List<OptionData>
+        this.category = new Category("Tickets"); // This is where the command will show up in the help menu
+
     }
 
     @Override
