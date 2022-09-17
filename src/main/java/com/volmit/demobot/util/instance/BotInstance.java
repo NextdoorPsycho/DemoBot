@@ -42,6 +42,8 @@ public class BotInstance {
                 .setChunkingFilter(ChunkingFilter.ALL) // enable member chunking for all guilds
                 .setMemberCachePolicy(MemberCachePolicy.ALL) // ignored if chunking enabled
                 .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                .enableIntents(GatewayIntent.MESSAGE_CONTENT)
+                .enableIntents(GatewayIntent.GUILD_MESSAGES)
                 .addEventListeners(commandClient)
                 .build().awaitReady();
         jda.getPresence().setStatus(OnlineStatus.IDLE);

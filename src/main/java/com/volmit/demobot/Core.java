@@ -28,7 +28,8 @@ public class Core extends ListenerAdapter {
     public String botOwnerID = "PutYourIdHere"; // ME
     public String botIMG = "https://i.imgur.com/TpCn8vW.png"; // Cat pic
     public String botPrefix = ".";
-    public String adminControllerRole = "ModRole";
+    public String adminControllerRole = "Administrator";
+    public String supportControllerRole = "Support";
     public Range xpPerMessage = Range.jitter(0.85f, 0.15f);
     public double xpBaseMultiplier = 2.13d;
 

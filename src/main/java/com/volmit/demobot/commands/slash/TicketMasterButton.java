@@ -1,16 +1,20 @@
 package com.volmit.demobot.commands.slash;
 
+
 import art.arcane.quill.execution.J;
 import com.volmit.demobot.Core;
 import com.volmit.demobot.Demo;
 import com.volmit.demobot.util.VolmitEmbed;
 import com.volmit.demobot.util.io.data.User;
+import lombok.SneakyThrows;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +44,7 @@ public class TicketMasterButton extends ListenerAdapter {
     }
 
 
+    @SneakyThrows
     public void createTicketLog(ButtonInteractionEvent e, String ticketId) throws IOException {
         Member m = e.getMember();
         Guild g = m.getGuild();
@@ -66,9 +71,22 @@ public class TicketMasterButton extends ListenerAdapter {
         printWriter.flush();
         printWriter.close();
 
+//        if (e.getGuild() != null
+//                && e.getGuild().getTextChannelsByName("ticket-logs", true).get(0) != null) {
+        e.getGuild().getTextChannelsByName("ticket-logs", true).get(0).sendFiles(FileUpload.fromData(path)).queue();
+//        } else {
+//            e.getGuild().createTextChannel("ticket-logs", e.getGuild().getCategoriesByName("Tickets", false).get(0)).queue(t -> {
+//                t.getManager().setType(ChannelType.TEXT).queue();
+//                t.getManager().putPermissionOverride(e.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL)).queue();
+//                t.getManager().putPermissionOverride(e.getGuild().getRolesByName("Administrator", true).get(0), EnumSet.of(Permission.VIEW_CHANNEL), null).queue();
+//                t.getManager().putPermissionOverride(e.getGuild().getRolesByName("Support", true).get(0), EnumSet.of(Permission.VIEW_CHANNEL), null).queue();
+//                t.sendMessage("Closed By User: " + m.getEffectiveName()).queue();
+//                t.sendFiles(FileUpload.fromData(path)).queue();
+//            });
+//        }
 
         m.getUser().openPrivateChannel().queue(channel1 -> channel1.sendMessage("Your ticket has been logged!").queue());
-        m.getUser().openPrivateChannel().complete().sendFile(new java.io.File(jarPath)).queue();
+        m.getUser().openPrivateChannel().complete().sendFiles(FileUpload.fromData(path)).queue();
         e.reply("Ticket closed!").setEphemeral(true).queue();
         if (path.delete()) {
             Demo.info("Deleted file: " + jarPath);
@@ -84,13 +102,11 @@ public class TicketMasterButton extends ListenerAdapter {
         Guild g = m.getGuild();
 
         //TODO: permissions check here
-        if (u.roleIds().size() > 0) {
-            //TODO: Add a message saying that the user is already in a ticket
+        if (u.ticketIds().size() > 0) {
+            e.reply("You already have a ticket!").setEphemeral(true).queue();
         } else {
-
-
-            net.dv8tion.jda.api.entities.Category ticketCategory = null;
-            for (net.dv8tion.jda.api.entities.Category c : g.getCategories()) {
+            Category ticketCategory = null;
+            for (Category c : g.getCategories()) {
                 if (c.getName().equals("Tickets")) {
                     ticketCategory = c;
                 }
@@ -102,23 +118,37 @@ public class TicketMasterButton extends ListenerAdapter {
             botData.reactions(botData.reactions() + 1);
 
             String ticketNumber = String.format("%04d", botData.reactions());
-            g.createTextChannel("ticket-" + ticketNumber, ticketCategory).queue(chat -> {
+            g.createTextChannel("ticket-" + ticketNumber, ticketCategory)
+                    .addRolePermissionOverride(g.getRolesByName(Core.get().adminControllerRole, false).get(0).getIdLong(), Collections.singleton(Permission.VIEW_CHANNEL), null)
+                    .addRolePermissionOverride(g.getRolesByName(Core.get().supportControllerRole, false).get(0).getIdLong(), Collections.singleton(Permission.VIEW_CHANNEL), null)
+                    .addRolePermissionOverride(g.getPublicRole().getIdLong(), null, Collections.singleton(Permission.VIEW_CHANNEL))
+                    .addPermissionOverride(m, Collections.singleton(Permission.VIEW_CHANNEL), null)
+                    .queue(chat -> {
                 EmbedBuilder embed = new VolmitEmbed();
                 embed.setTitle("Welcome to your ticket!");
                 embed.setTimestamp(new Date().toInstant());
-                embed.setDescription("Welcome to your own personal dimension for issues and problems.\n" +
-                        "If you want to close the ticket, just click the close button right below this message!\n " +
-                        "it's pinned, so you can always come back");
+                embed.setDescription(
+                        "Welcome to your own personal dimension for Everything you need in Volmit in one place\n" +
+                                "If you want to close the ticket, just click the close button right below this message!\n " +
+                                "it's pinned, so you can always come back\n" +
+                                " " +
+                                "*PLEASE NOTE THAT IF YOU ARE MAKING ANY MONEY RELATED QUERIES, OR TRANSACTIONS; WE ARE NOT " +
+                                "RESPONSIBLE FOR ANYTHING THAT CAN HAPPEN, ALL TRANSACTIONS ARE DONE AT YOUR OWN RISK, AND " +
+                                "VOLMIT WILL NOT BE HELD RESPONSIBLE FOR INTRAPERSONAL SALES OR TRANSACTIONS, WE ARE MERELY " +
+                                "A MEDIUM WITH ZERO LIABILITY; AND WE WILL NOT BE HELD RESPONSIBLE FOR ANYTHING THAT HAPPENS.*");
+
                 Button button = Button.danger("close-ticket", "[ Click to close Ticket ]");
                 chat.sendMessage(m.getAsMention() + " has been added to the ticket!").queue();
                 chat.sendMessageEmbeds(embed.build()).setActionRow(button).queue(msg -> msg.pin().queue());
             });
             u.ticketIds().add(ticketNumber);
             Demo.info("Created ticket for " + m.getUser().getName() + " with id :" + ticketNumber);
+
+            botData.money(botData.money() + 1);
+            remakeEmbedMessage(m.getGuild().getTextChannelsByName("ticket-hub", true).get(0));
+            e.reply("Ticket created!").setEphemeral(true).queue();
         }
-        botData.money(botData.money() + 1);
-        remakeEmbedMessage(m.getGuild().getTextChannelsByName("ticket-hub", true).get(0));
-        e.reply("Ticket created!").setEphemeral(true).queue();
+
     }
 
 
@@ -127,40 +157,52 @@ public class TicketMasterButton extends ListenerAdapter {
         User botData = Demo.getLoader().getUser(1000000001);
         User u = Demo.getLoader().getUser(m.getUser().getIdLong());
         u.ticketIds().forEach(id -> {
-            if (e.getChannel().getName().contains(id) /*|| is Admin Check*/) {
+            if (e.getChannel().getName().contains(id) && (m.getRoles().contains(m.getGuild().getRolesByName("Administrator", false).get(0)) || m.getRoles().contains(m.getGuild().getRolesByName("Support", false).get(0)))/*|| is Admin Check*/) {
                 try {
                     createTicketLog(e, id);
-                } catch (IOException e1) {
-                    e1.printStackTrace();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
-
                 e.getChannel().delete().queue(d -> {
                     u.ticketIds().remove(id);
                     Demo.info("Closed ticket for " + m.getUser().getName() + " ID: " + id);
                 });
+
+                botData.money(botData.money() - 1);
+                J.a(() -> {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    remakeEmbedMessage(m.getGuild().getTextChannelsByName("ticket-hub", true).get(0));
+                });
             }
         });
-        botData.money(botData.money() - 1);
-        remakeEmbedMessage(m.getGuild().getTextChannelsByName("ticket-hub", true).get(0));
     }
 
 
     public static void makeTicketEmbedMessage(TextChannel textChannel) {
-        int ticketCount = textChannel.getGuild().getCategoriesByName("Tickets", true).get(0).getTextChannels().size() - 1;
         User botData = Demo.getLoader().getUser(1000000001);
 
         EmbedBuilder embed = new VolmitEmbed();
         embed.setTitle("Welcome to the Ticket center!");
         embed.setTimestamp(new Date().toInstant());
         embed.setDescription("If you want to create a ticket, all you need to do is click the button below!\n" +
-                "If you make a ticket you will be given a custom chat and space to talk probate to you, " +
-                "and the people who are able to help with tickets. you can always do !close to close the " +
-                "tickets, or press t he button! that's created when you get the chat!");
+                "**TICKETS ARE FOR THE FOLLOWING:**\n" +
+                "- Commissioned projects\n" +
+                "- Private/Developer Support\n" +
+                "- Reporting Illegal activity (Spam, Phishing etc...)\n" +
+                "- Business Inquires\n" +
+                "**TICKETS ARE NOT FOR THE FOLLOWING:**\n" +
+                "- General Support (Use the chats for that)\n" +
+                "- Plugin Support/Questions (Also Use Chats for that)\n" +
+                "- General Chit Chat\n");
         embed.setFooter("Current Tickets: " + (int) botData.money(), Core.get().botIMG);
         Button button = Button.success("create-ticket", "[\u2800 \u2800 \u2800 \u2800 Click for a Ticket\u2800 \u2800 \u2800 \u2800]");
         textChannel.sendMessageEmbeds(embed.build())
                 .setActionRow(button)
-                .queue();
+                .queue(m -> m.pin().queue());
     }
 
     public static void remakeEmbedMessage(TextChannel textChannel) {
