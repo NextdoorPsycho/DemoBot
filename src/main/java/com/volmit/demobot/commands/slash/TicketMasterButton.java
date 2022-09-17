@@ -118,12 +118,11 @@ public class TicketMasterButton extends ListenerAdapter {
                         embed.setDescription(
                                 "Welcome to your own personal dimension for Everything you need in Volmit in one place\n" +
                                         "If you want to close the ticket, just click the close button right below this message!\n " +
-                                        "it's pinned, so you can always come back\n" +
-                                        " " +
-                                        "*PLEASE NOTE THAT IF YOU ARE MAKING ANY MONEY RELATED QUERIES, OR TRANSACTIONS; WE ARE NOT " +
-                                        "RESPONSIBLE FOR ANYTHING THAT CAN HAPPEN, ALL TRANSACTIONS ARE DONE AT YOUR OWN RISK, AND " +
-                                        "VOLMIT WILL NOT BE HELD RESPONSIBLE FOR INTRAPERSONAL SALES OR TRANSACTIONS, WE ARE MERELY " +
-                                        "A MEDIUM WITH ZERO LIABILITY; AND WE WILL NOT BE HELD RESPONSIBLE FOR ANYTHING THAT HAPPENS.*");
+                                        "it's pinned, so you can always come back\n");
+                        embed.addField("**Liability Notice**", "**__PLEASE NOTE THAT IF YOU ARE MAKING ANY MONEY RELATED QUERIES, OR TRANSACTIONS; WE ARE NOT " +
+                                "RESPONSIBLE FOR ANYTHING THAT CAN HAPPEN, ALL TRANSACTIONS ARE DONE AT YOUR OWN RISK, AND " +
+                                "VOLMIT WILL NOT BE HELD RESPONSIBLE FOR INTRAPERSONAL SALES OR TRANSACTIONS, WE ARE MERELY " +
+                                "A MEDIUM WITH ZERO LIABILITY; AND WE WILL NOT BE HELD RESPONSIBLE FOR ANYTHING THAT HAPPENS.__**", false);
 
                         Button button = Button.danger("close-ticket", "[ Click to close Ticket ]");
                         chat.sendMessage(m.getAsMention() + " has been added to the ticket!").queue();
