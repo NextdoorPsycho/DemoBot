@@ -19,10 +19,7 @@ import net.dv8tion.jda.api.utils.FileUpload;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class TicketMasterButton extends ListenerAdapter {
 
@@ -50,7 +47,7 @@ public class TicketMasterButton extends ListenerAdapter {
         Guild g = m.getGuild();
         TextChannel channel = g.getTextChannelsByName("ticket-" + ticketId, true).get(0);
 
-        File path = new File("Tickets/ticket-" + ticketId + ".txt");
+        File path = new File("Data/Tickets/ticket-" + ticketId + ".txt");
         path.getParentFile().mkdirs();
         PrintWriter printWriter = new PrintWriter(path);
 
@@ -59,22 +56,25 @@ public class TicketMasterButton extends ListenerAdapter {
         Collections.reverse(msgList);
 
         printWriter.append("[  THIS IS A PRINTOUT OF YOUR WHOLE TICKET  ]\n \n");
+        Set<Member> members = new HashSet<>();
         for (Message msg : msgList) {
             net.dv8tion.jda.api.entities.User author = msg.getAuthor();
             String content = msg.getContentRaw();
             if (author.isBot()) {
                 continue;
             } else {
+                members.add(msg.getMember());
                 printWriter.append(author.getName() + ": \n" + content + "\n \n");
             }
         }
         printWriter.flush();
         printWriter.close();
-
-
         e.getGuild().getTextChannelsByName("ticket-logs", true).get(0).sendFiles(FileUpload.fromData(path)).queue();
-        m.getUser().openPrivateChannel().queue(channel1 -> channel1.sendMessage("Your ticket has been logged!").queue());
-        m.getUser().openPrivateChannel().complete().sendFiles(FileUpload.fromData(path)).queue();
+
+        for (Member mem : members) {
+            mem.getUser().openPrivateChannel().queue(channel1 -> channel1.sendMessage("Your ticket has been logged!").queue());
+            mem.getUser().openPrivateChannel().complete().sendFiles(FileUpload.fromData(path)).queue();
+        }
         e.reply("Ticket closed!").setEphemeral(true).queue();
         if (path.delete()) {
             Demo.info("Deleted file: Tickets/ticket-" + ticketId + ".txt");
@@ -144,7 +144,7 @@ public class TicketMasterButton extends ListenerAdapter {
         Member m = e.getMember();
         User botData = Demo.getLoader().getUser(1000000001);
         TextChannel tc = e.getChannel().asTextChannel();
-        String tcid = tc.getName();
+        String tcid = tc.getName().trim().replace("ticket-", "");
         User u = Demo.getLoader().getUser(m.getUser().getIdLong());
 
 
