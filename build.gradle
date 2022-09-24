@@ -25,13 +25,13 @@ dependencies {
 
     //Discord JDA stuff
     implementation'pw.chew:jda-chewtils:2.0-SNAPSHOT'
-    implementation 'net.dv8tion:JDA:5.0.0-alpha.18'
+    implementation 'net.dv8tion:JDA:5.0.0-alpha.20'
 
 
     //My things
     implementation 'org.slf4j:slf4j-api:2.0.0-alpha7'
     implementation 'org.slf4j:slf4j-simple:2.0.0-alpha7'
-    implementation 'org.jsoup:jsoup:1.14.3'
+    implementation 'org.jsoup:jsoup:1.15.3'
     implementation 'redis.clients:jedis:4.2.3'
     implementation 'commons-io:commons-io:2.11.0'
 
