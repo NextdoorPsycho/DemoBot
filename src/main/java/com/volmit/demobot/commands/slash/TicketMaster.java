@@ -1,10 +1,12 @@
 package com.volmit.demobot.commands.slash;
 
+
 import com.jagrosh.jdautilities.command.SlashCommand;
 import com.jagrosh.jdautilities.command.SlashCommandEvent;
 import com.volmit.demobot.Core;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
 import java.util.ArrayList;
@@ -35,8 +37,8 @@ public class TicketMaster extends SlashCommand {
     }
 
     public void categorySetup(Guild g) {
-        net.dv8tion.jda.api.entities.Category category = null;
-        for (net.dv8tion.jda.api.entities.Category c : g.getCategories()) {
+        net.dv8tion.jda.api.entities.channel.concrete.Category category = null;
+        for (net.dv8tion.jda.api.entities.channel.concrete.Category c : g.getCategories()) {
             if (c.getName().equals("Tickets")) {
                 category = c;
             }
