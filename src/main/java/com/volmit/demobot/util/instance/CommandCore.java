@@ -1,9 +1,9 @@
-package com.volmit.demobot.adapters;
+package com.volmit.demobot.util.instance;
 
-import com.volmit.demobot.Core;
 import com.volmit.demobot.Demo;
-import com.volmit.demobot.util.BotEmbed;
-import com.volmit.demobot.util.instance.SkipCommand;
+import com.volmit.demobot.Core;
+import com.volmit.demobot.util.VolmitCommand;
+import com.volmit.demobot.util.VolmitEmbed;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -35,7 +35,7 @@ public class CommandCore extends VolmitCommand {
         Demo.info("Command List Initialized");
 
         // Init embed
-        BotEmbed embed = new BotEmbed("The Abyssalith - " + Core.get().botName + " Info Page!", e.getMessage());
+        VolmitEmbed embed = new VolmitEmbed("The Abyssalith - " + Core.get().botName + " Info Page!", e.getMessage());
 
         // Add explanation
         embed.addField(
@@ -95,7 +95,7 @@ public class CommandCore extends VolmitCommand {
     public List<VolmitCommand> processCMDs(JDA jda) {
         List<VolmitCommand> foundCommands = new ArrayList<>();
         jda.getRegisteredListeners().forEach(c -> {
-            //package with commands!
+
             if (c instanceof VolmitCommand && c.getClass().getPackageName().contains(".commands")) {
                 foundCommands.add((VolmitCommand) c);
             }

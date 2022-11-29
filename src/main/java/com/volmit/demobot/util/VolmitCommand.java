@@ -1,19 +1,17 @@
-package com.volmit.demobot.adapters;
+
+package com.volmit.demobot.util;
 
 
-import com.volmit.demobot.Core;
 import com.volmit.demobot.Demo;
-import com.volmit.demobot.util.BotEmbed;
+import com.volmit.demobot.Core;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+
+import java.util.*;
 
 
 public class VolmitCommand extends ListenerAdapter {
@@ -52,6 +50,7 @@ public class VolmitCommand extends ListenerAdapter {
     }
 
 
+
     public VolmitCommand(String name, String[] commands, String[] roles, String description, boolean needsArguments, String category, VolmitCommand[] subcommands) {
         if (commands == null || commands.length == 0) commands = new String[]{name};
         if (roles == null) roles = new String[]{};
@@ -69,6 +68,7 @@ public class VolmitCommand extends ListenerAdapter {
     public void handle(List<String> args, MessageReceivedEvent e) {
         e.getMessage().reply("The command you ran is improperly written. The handle() must be overwritten.").complete();
     }
+
 
 
     public void onMessageReceived(MessageReceivedEvent e) {
@@ -112,7 +112,6 @@ public class VolmitCommand extends ListenerAdapter {
             handle(args, e);
         }
     }
-
     private boolean noPermission(List<Role> roles, String ID) {
         if (getRoles() != null && getRoles().size() != 0) {
             for (Role userRole : roles) {
@@ -131,7 +130,6 @@ public class VolmitCommand extends ListenerAdapter {
         }
         return true;
     }
-
     private boolean checkCommand(String command) {
         if (command.equalsIgnoreCase(name)) return true;
         for (String cmd : getCommands()) {
@@ -141,9 +139,8 @@ public class VolmitCommand extends ListenerAdapter {
         }
         return false;
     }
-
     public void sendHelp(Message message) {
-        BotEmbed embed = new BotEmbed(Core.get().botPrefix + getName() + " Command Usage", message);
+        VolmitEmbed embed = new VolmitEmbed(Core.get().botPrefix + getName() + " Command Usage", message);
         embed.setFooter("All Non-SubCommands are prefaced with the prefix: `" + Core.get().botPrefix + "`");
         String cmd = /*Kit.get().BotPrefix +*/ getName().substring(0, 1).toUpperCase() + getName().substring(1);
         if (getCommands().size() < 2) {
@@ -169,9 +166,8 @@ public class VolmitCommand extends ListenerAdapter {
         embed.setFooter(Core.get().botCompany, Core.get().botIMG);
         embed.send(message);
     }
-
     protected void sendCategoryHelp(Message message) {
-        BotEmbed embed = new BotEmbed(getName() + " Command Usage", message);
+        VolmitEmbed embed = new VolmitEmbed(getName() + " Command Usage", message);
         String menuName = getName();
         getSubcommands().forEach(command -> {
             String cmd = Core.get().botPrefix + menuName + " " + command.getName().substring(0, 1).toUpperCase() + command.getName().substring(1);

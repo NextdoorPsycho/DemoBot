@@ -1,8 +1,11 @@
-package com.volmit.demobot.adapters;
+ 
+package com.volmit.demobot.commands;
 
 import com.volmit.demobot.Core;
 import com.volmit.demobot.Demo;
-import com.volmit.demobot.adapters.prefix.Shutdown;
+import com.volmit.demobot.commands.prefix.Passive;
+import com.volmit.demobot.commands.prefix.Shutdown;
+import com.volmit.demobot.util.instance.CommandCore;
 import com.volmit.demobot.util.instance.SkipCommand;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -17,11 +20,11 @@ import java.util.List;
 import java.util.Objects;
 
 @SkipCommand
-public class ListenerRegistry extends ListenerAdapter {
+public class CommandRegistry extends ListenerAdapter {
     /**
      * Command package path. Recursively searched for commands not annotated by {@link SkipCommand}
      */
-    private static final String commandPackagePath = ListenerRegistry.class.getPackage().getName();
+    private static final String commandPackagePath = CommandRegistry.class.getPackage().getName();
 
 
     /**
@@ -31,13 +34,10 @@ public class ListenerRegistry extends ListenerAdapter {
      * builder.addSlashCommand(new PingCommand());
      */
     public static void All(JDA jda) {
-        jda.addEventListener(new Demo());
-        jda.addEventListener(new Core());
-        jda.addEventListener(new Shutdown());
-//        jda.addEventListener(new Passive());
-
-        //Listeners
-//        jda.addEventListener(new TicketMasterButton());
+        jda.addEventListener(new Demo()); // [ DONT TOUCH THESE  LISTENERS ]
+        jda.addEventListener(new Core()); // [ DONT TOUCH THESE  LISTENERS ]
+        jda.addEventListener(new Shutdown()); // [ DONT TOUCH THESE  LISTENERS ]
+        jda.addEventListener(new Passive());
 
         //END
         jda.addEventListener(new CommandCore(jda)); // [ DONT TOUCH THESE  LISTENERS ]
@@ -77,8 +77,7 @@ public class ListenerRegistry extends ListenerAdapter {
                 .map(cmdClass -> {
                     try {
                         return (ListenerAdapter) cmdClass.getConstructors()[0].newInstance();
-                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                             IllegalArgumentException e) {
+                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
                         e.printStackTrace();
                         Demo.debug("Failed to load command " + cmdClass.getName() + " with empty constructor!");
                     } catch (ArrayIndexOutOfBoundsException e) {

@@ -1,11 +1,11 @@
-package com.volmit.demobot.util;
 
+package com.volmit.demobot.util;
 
 import com.volmit.demobot.Core;
 import com.volmit.demobot.Demo;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 
 import java.awt.*;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
-public class BotEmbed extends EmbedBuilder {
+public class VolmitEmbed extends EmbedBuilder {
     private final Message message;
 
     /*
@@ -23,7 +23,7 @@ public class BotEmbed extends EmbedBuilder {
         String `title` - the title of the embed
         String `name` - the name greeted in the top of the embed
      */
-    public BotEmbed(String title, String name) {
+    public VolmitEmbed(String title, String name) {
         this.message = null;
         this.setAuthor("Requested by: " + name, null)
                 .setTitle(!title.equals("") ? title : "\u200E")
@@ -36,7 +36,7 @@ public class BotEmbed extends EmbedBuilder {
         String `title` - the title of the embed
         String `message` - the message used to greet the user with
      */
-    public BotEmbed(String title, Message message) {
+    public VolmitEmbed(String title, Message message) {
         this.message = message;
         this.setAuthor("Requested by: " + message.getAuthor().getName(), null, message.getAuthor().getAvatarUrl())
                 .setTitle(!title.equals("") ? title : "\u200E")
@@ -49,7 +49,7 @@ public class BotEmbed extends EmbedBuilder {
         Creates a new default VolmitEmbed object.
         String `title` - the title of the embed
      */
-    public BotEmbed(String title) {
+    public VolmitEmbed(String title) {
         this.message = null;
         this.setTitle(title)
                 .setColor(Color.decode(Core.get().botColor))
@@ -61,7 +61,7 @@ public class BotEmbed extends EmbedBuilder {
         String `title` - the title of the embed
         boolean `useShort` - toggles footer
      */
-    public BotEmbed(String title, boolean useShort) {
+    public VolmitEmbed(String title, boolean useShort) {
         this.message = null;
         this.setTitle(title).setColor(Color.decode(Core.get().botColor));
         if (!useShort) {
@@ -73,7 +73,7 @@ public class BotEmbed extends EmbedBuilder {
         Creates a new default VolmitEmbed object.
         This has no title (unless set later)
      */
-    public BotEmbed() {
+    public VolmitEmbed() {
         this.message = null;
         this.setColor(Color.decode(Core.get().botColor))
                 .setFooter(Core.get().botCompany, Core.get().botIMG)

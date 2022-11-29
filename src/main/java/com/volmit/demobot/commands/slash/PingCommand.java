@@ -1,4 +1,4 @@
-package com.volmit.demobot.adapters.slash;
+package com.volmit.demobot.commands.slash;
 
 import com.jagrosh.jdautilities.command.SlashCommand;
 import com.jagrosh.jdautilities.command.SlashCommandEvent;
@@ -18,7 +18,9 @@ public class PingCommand extends SlashCommand {
         // Sends a "<bot> is thinking..." response and allows you a delayed response.
 
         event.deferReply().queue(
-                m -> m.editOriginal("Pong!").queueAfter(1, TimeUnit.SECONDS)
+                m ->{
+                    m.editOriginal("Pong!").queueAfter(1, TimeUnit.SECONDS);
+                }
         );
     }
 }
