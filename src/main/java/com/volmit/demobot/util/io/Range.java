@@ -1,4 +1,3 @@
-
 package com.volmit.demobot.util.io;
 
 
@@ -21,6 +20,7 @@ public class Range {
     private float min = 0;
     @Builder.Default
     private float max = 1;
+
     public static Range jitter(float center, float jitter) {
         return new Range(center - (jitter / 2), center + (jitter / 2));
     }
@@ -28,6 +28,7 @@ public class Range {
     public float rand() {
         return RNG.r.f(min, max);
     }
+
     public boolean contains(float d) {
         return d >= min && d <= max;
     }

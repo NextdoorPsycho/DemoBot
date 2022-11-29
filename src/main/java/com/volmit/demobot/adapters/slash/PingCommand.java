@@ -1,4 +1,4 @@
-package com.volmit.demobot.commands.slash;
+package com.volmit.demobot.adapters.slash;
 
 import com.jagrosh.jdautilities.command.SlashCommand;
 import com.jagrosh.jdautilities.command.SlashCommandEvent;
