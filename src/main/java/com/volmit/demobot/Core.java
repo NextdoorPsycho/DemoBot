@@ -17,6 +17,9 @@ import java.io.IOException;
 public class Core extends ListenerAdapter {
 
 
+    // Used for hot-loading and config
+    private static final FileWatcher fw = new FileWatcher(getFile());
+    private static AtomicCache<Core> instance = new AtomicCache<>();
     // Set from config
     public String botOnReadyMessage = "Bot has Started";
     public String botActivityMessage = "The Universe: .?";
@@ -28,24 +31,14 @@ public class Core extends ListenerAdapter {
     public String botOwnerID = "PutYourIdHere"; // ME
     public String botIMG = "https://i.imgur.com/TpCn8vW.png"; // Cat pic
     public String botPrefix = ".";
-    public String adminControllerRole = "ModRole";
+    public String adminControllerRole = "Administrator";
+    public String supportControllerRole = "Support";
     public Range xpPerMessage = Range.jitter(0.85f, 0.15f);
     public double xpBaseMultiplier = 2.13d;
-
     // Set from main class
     public transient Long botID;
     public transient User botUser;
     public transient String botName;
-
-    // Used for hot-loading and config
-    private static final FileWatcher fw = new FileWatcher(getFile());
-    private static AtomicCache<Core> instance = new AtomicCache<>();
-
-    public void save() {
-        File file = getFile();
-        file.getParentFile().mkdirs();
-        J.attempt(() -> IO.writeAll(file, new JSONObject(new Gson().toJson(this)).toString(4)));
-    }
 
     public static void tick() {
         if (fw.checkModified()) {
@@ -79,6 +72,12 @@ public class Core extends ListenerAdapter {
 
     private static File getFile() {
         return new File("Data/Config.json");
+    }
+
+    public void save() {
+        File file = getFile();
+        file.getParentFile().mkdirs();
+        J.attempt(() -> IO.writeAll(file, new JSONObject(new Gson().toJson(this)).toString(4)));
     }
 
 

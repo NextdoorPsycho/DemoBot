@@ -1,4 +1,3 @@
- 
 package com.volmit.demobot.util.io.data;
 
 import com.volmit.demobot.util.io.DataType;

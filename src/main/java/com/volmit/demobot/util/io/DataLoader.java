@@ -1,4 +1,3 @@
- 
 package com.volmit.demobot.util.io;
 
 import art.arcane.quill.collections.KMap;
@@ -10,11 +9,11 @@ import com.volmit.demobot.util.io.data.User;
 public class DataLoader {
     private final StorageAccess storage;
     private final KMap<Class<? extends DataType>, TypedLoader<?>> loaders = new KMap<>();
-    private final Looper cleaner = new Looper() {
+    public final Looper cleaner = new Looper() {
         @Override
         protected long loop() {
-            cleanup(10000);
-            return 1000;
+            cleanup(500);
+            return 500;
         }
     };
 
