@@ -1,7 +1,7 @@
 package com.volmit.demobot.commands.prefix;
 
 import com.volmit.demobot.Demo;
-import com.volmit.demobot.commands.VolmitCommand;
+import com.volmit.demobot.util.VolmitCommand;
 import com.volmit.demobot.util.VolmitEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -32,6 +32,5 @@ public class Passive extends VolmitCommand {
         embed.addField("Where is it saved?", "*- Based on the settings, Either a local file server or a Redis Server*", false);
         embed.addField("Other Monitoring", "- Ensuring you don't post Phishing links (instant ban)\n- Server statistics (roles, and so on)", false);
         embed.send(e.getMessage());
-
     }
 }

@@ -1,7 +1,7 @@
 package com.volmit.demobot;
 
 import art.arcane.quill.execution.Looper;
-import com.volmit.demobot.commands.ListenerRegistry;
+import com.volmit.demobot.commands.CommandRegistry;
 import com.volmit.demobot.util.instance.BotProvider;
 import com.volmit.demobot.util.instance.IBotProvider;
 import com.volmit.demobot.util.io.DataLoader;
@@ -52,12 +52,13 @@ public class Demo extends ListenerAdapter {
         }
 
         loader = new DataLoader(new FileSystemStorageAccess(new File("Data/BotData")));
+
         System.out.println("Initializing");
 
         Core.get().botID = getJDA().getSelfUser().getIdLong();
         Core.get().botUser = getJDA().getUserById(Core.get().botID);
         Core.get().botName = Objects.requireNonNull(Core.get().botUser).getName();
-        ListenerRegistry.All(getJDA()); // ALL COMMANDS ARE HERE
+        CommandRegistry.All(getJDA()); // ALL COMMANDS ARE HERE
 
         new Looper() {
             @Override

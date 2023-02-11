@@ -1,13 +1,11 @@
 
 package com.volmit.demobot.util;
 
-
-
 import com.volmit.demobot.Core;
 import com.volmit.demobot.Demo;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 
 import java.awt.*;

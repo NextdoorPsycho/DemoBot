@@ -10,11 +10,11 @@ import com.volmit.demobot.util.io.data.User;
 public class DataLoader {
     private final StorageAccess storage;
     private final KMap<Class<? extends DataType>, TypedLoader<?>> loaders = new KMap<>();
-    public final Looper cleaner = new Looper() {
+    private final Looper cleaner = new Looper() {
         @Override
         protected long loop() {
-            cleanup(500);
-            return 500;
+            cleanup(10000);
+            return 1000;
         }
     };
 
