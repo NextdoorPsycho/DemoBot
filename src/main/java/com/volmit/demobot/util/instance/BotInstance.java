@@ -35,8 +35,6 @@ public class BotInstance {
         builder.addSlashCommand(new PasteServicesCommand());
 
 
-
-
         // End of Slash Commands
         builder.forceGuildOnly(Core.get().discordGuildID);
         builder.setOwnerId(Core.get().botOwnerID);
