@@ -28,11 +28,7 @@ public class BotInstance {
         CommandClientBuilder builder = new CommandClientBuilder();// [DONT TOUCH]
         // Slash Commands Below:
         builder.addSlashCommand(new PingCommand());
-        builder.addSlashCommand(new TicketMaster());
-        builder.addSlashCommand(new LogCommand());
-        builder.addSlashCommand(new ChunkyStatement());
-        builder.addSlashCommand(new LinkCommand());
-        builder.addSlashCommand(new PasteServicesCommand());
+//        builder.addSlashCommand(new TicketMaster());
 
 
         // End of Slash Commands
@@ -47,8 +43,8 @@ public class BotInstance {
                 .enableIntents(GatewayIntent.GUILD_MESSAGES)
                 .addEventListeners(commandClient)
                 .build().awaitReady();
-        jda.getPresence().setStatus(OnlineStatus.IDLE);
-        jda.getPresence().setActivity(Activity.watching(Core.get().botActivityMessage));
+        jda.getPresence().setStatus(OnlineStatus.ONLINE);
+        jda.getPresence().setActivity(Activity.listening(Core.get().botActivityMessage));
         Demo.info(Core.get().botInstanceMessage);
     }
 

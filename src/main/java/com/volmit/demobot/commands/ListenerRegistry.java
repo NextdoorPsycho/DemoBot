@@ -3,6 +3,7 @@ package com.volmit.demobot.commands;
 
 import com.volmit.demobot.Core;
 import com.volmit.demobot.Demo;
+import com.volmit.demobot.commands.prefix.CommandCore;
 import com.volmit.demobot.commands.prefix.Passive;
 import com.volmit.demobot.commands.prefix.Shutdown;
 import com.volmit.demobot.commands.slash.TicketMasterButton;
