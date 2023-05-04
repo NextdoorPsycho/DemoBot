@@ -4,7 +4,7 @@ import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.volmit.demobot.Core;
 import com.volmit.demobot.Demo;
-import com.volmit.demobot.commands.slash.*;
+import com.volmit.demobot.commands.slash.PingCommand;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -20,6 +20,7 @@ import java.util.Objects;
 public class BotInstance {
 
     private final JDA jda;
+
     public BotInstance(String s) throws LoginException, InterruptedException {
         if (Objects.equals(Core.get().botToken, "")) {
             Demo.error("YOU NEED TO GIVE A VALID BOT TOKEN");

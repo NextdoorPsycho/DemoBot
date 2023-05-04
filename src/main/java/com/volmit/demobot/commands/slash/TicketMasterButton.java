@@ -29,6 +29,45 @@ import java.util.*;
 public class TicketMasterButton extends ListenerAdapter {
 
 
+    public static void makeTicketEmbedMessage(TextChannel textChannel) {
+        User botData = Demo.getLoader().getUser(1000000001);
+
+        EmbedBuilder embed = new VolmitEmbed();
+        embed.setTitle("Welcome to the Ticket center!");
+        embed.setTimestamp(new Date().toInstant());
+        embed.setDescription("If you want to create a ticket, all you need to do is click the button below!\n" +
+                "**TICKETS ARE FOR THE FOLLOWING:**\n" +
+                "- Commissioned projects\n" +
+                "- Private/Developer Support\n" +
+                "- Reporting Illegal activity (Spam, Phishing etc...)\n" +
+                "- Business Inquires\n" +
+                "**TICKETS ARE NOT FOR THE FOLLOWING:**\n" +
+                "- General Support (Use the chats for that)\n" +
+                "- Plugin Support/Questions (Also Use Chats for that)\n" +
+                "- General Chit Chat\n");
+        embed.setFooter("Current Tickets: " + (int) botData.money(), Core.get().botIMG);
+        Button button = Button.success("create-ticket", "[\u2800 \u2800 \u2800 \u2800 Click for a Ticket\u2800 \u2800 \u2800 \u2800]");
+        textChannel.sendMessageEmbeds(embed.build())
+                .setActionRow(button)
+                .queue(m -> m.pin().queue());
+    }
+
+    public static void remakeEmbedMessage(TextChannel textChannel) {
+        MessageHistory history = textChannel.getHistoryFromBeginning(100).complete();
+        List<Message> msgList = new ArrayList<>(history.getRetrievedHistory());
+        for (Message msg : msgList) {
+            msg.delete().queue();
+        }
+        J.a(() -> {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ignored) {
+            }
+            makeTicketEmbedMessage(textChannel);
+        });
+
+    }
+
     @Override
     public void onMessageReceived(MessageReceivedEvent e) {
         if (e.getChannel().getName().equals("ticket-hub") && !e.getAuthor().isBot()) {
@@ -44,7 +83,6 @@ public class TicketMasterButton extends ListenerAdapter {
             closeTicket(e);
         }
     }
-
 
     @SneakyThrows
     public void createTicketLog(ButtonInteractionEvent e, String ticketId) throws IOException {
@@ -143,7 +181,6 @@ public class TicketMasterButton extends ListenerAdapter {
 
     }
 
-
     private void closeTicket(ButtonInteractionEvent e) {
         Member m = e.getMember();
         User botData = Demo.getLoader().getUser(1000000001);
@@ -177,46 +214,6 @@ public class TicketMasterButton extends ListenerAdapter {
                 remakeEmbedMessage(m.getGuild().getTextChannelsByName("ticket-hub", true).get(0));
             });
         }
-
-    }
-
-
-    public static void makeTicketEmbedMessage(TextChannel textChannel) {
-        User botData = Demo.getLoader().getUser(1000000001);
-
-        EmbedBuilder embed = new VolmitEmbed();
-        embed.setTitle("Welcome to the Ticket center!");
-        embed.setTimestamp(new Date().toInstant());
-        embed.setDescription("If you want to create a ticket, all you need to do is click the button below!\n" +
-                "**TICKETS ARE FOR THE FOLLOWING:**\n" +
-                "- Commissioned projects\n" +
-                "- Private/Developer Support\n" +
-                "- Reporting Illegal activity (Spam, Phishing etc...)\n" +
-                "- Business Inquires\n" +
-                "**TICKETS ARE NOT FOR THE FOLLOWING:**\n" +
-                "- General Support (Use the chats for that)\n" +
-                "- Plugin Support/Questions (Also Use Chats for that)\n" +
-                "- General Chit Chat\n");
-        embed.setFooter("Current Tickets: " + (int) botData.money(), Core.get().botIMG);
-        Button button = Button.success("create-ticket", "[\u2800 \u2800 \u2800 \u2800 Click for a Ticket\u2800 \u2800 \u2800 \u2800]");
-        textChannel.sendMessageEmbeds(embed.build())
-                .setActionRow(button)
-                .queue(m -> m.pin().queue());
-    }
-
-    public static void remakeEmbedMessage(TextChannel textChannel) {
-        MessageHistory history = textChannel.getHistoryFromBeginning(100).complete();
-        List<Message> msgList = new ArrayList<>(history.getRetrievedHistory());
-        for (Message msg : msgList) {
-            msg.delete().queue();
-        }
-        J.a(() -> {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ignored) {
-            }
-            makeTicketEmbedMessage(textChannel);
-        });
 
     }
 }

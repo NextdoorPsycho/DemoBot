@@ -18,28 +18,33 @@ import java.util.Objects;
 
 public class Demo extends ListenerAdapter {
 
+    public static final IBotProvider provider = new BotProvider();
     @Getter
     private static DataLoader loader;
+
     public static JDA getJDA() {
         return provider.get().getJDA();
     }
-    public static final IBotProvider provider = new BotProvider();
+
     private static void log(String tag, Object t) {
         System.out.println("[" + tag + "]-> " + t);
     }
+
     public static void warn(Object message) {
         log("WARN", message);
     }
+
     public static void info(Object message) {
         log("INFO", message);
     }
+
     public static void error(Object message) {
         log("ERROR", message);
     }
+
     public static void debug(Object message) {
         log("DEBUG", message);
     }
-
 
 
     public static void main(String[] args) {
@@ -69,19 +74,18 @@ public class Demo extends ListenerAdapter {
         Runtime.getRuntime().addShutdownHook(new Thread(loader::close));
     }
 
-
-    @Override
-    public void onReady(@NonNull ReadyEvent e) {
-        e.getJDA().updateCommands().queue();
-        System.out.println(e.getJDA().getSelfUser().getAsTag()+ Core.get().botOnReadyMessage);
-        info("Bot has Started: Active Monitoring");
-    }
-
     public static void shutdown() {
         System.out.println("Terminating the bot instance");
         getJDA().getPresence().setStatus(OnlineStatus.OFFLINE);
         getJDA().shutdown();
         System.exit(1);
+    }
+
+    @Override
+    public void onReady(@NonNull ReadyEvent e) {
+        e.getJDA().updateCommands().queue();
+        System.out.println(e.getJDA().getSelfUser().getAsTag() + Core.get().botOnReadyMessage);
+        info("Bot has Started: Active Monitoring");
     }
 
 

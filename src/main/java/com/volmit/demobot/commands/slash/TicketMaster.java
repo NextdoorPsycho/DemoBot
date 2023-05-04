@@ -48,7 +48,7 @@ public class TicketMaster extends SlashCommand {
                         .addRolePermissionOverride(g.getRolesByName(Core.get().adminControllerRole, false).get(0).getIdLong(), Collections.singleton(Permission.VIEW_CHANNEL), null)
                         .addRolePermissionOverride(g.getRolesByName(Core.get().supportControllerRole, false).get(0).getIdLong(), Collections.singleton(Permission.VIEW_CHANNEL), null)
                         .addRolePermissionOverride(g.getPublicRole().getIdLong(), null, Collections.singleton(Permission.MESSAGE_SEND))
-                        .addRolePermissionOverride(g.getPublicRole().getIdLong(),  Collections.singleton(Permission.MESSAGE_ADD_REACTION), null)
+                        .addRolePermissionOverride(g.getPublicRole().getIdLong(), Collections.singleton(Permission.MESSAGE_ADD_REACTION), null)
                         .queue(TicketMasterButton::makeTicketEmbedMessage);
                 g.createTextChannel("ticket-logs", t)
                         .addRolePermissionOverride(g.getRolesByName(Core.get().adminControllerRole, false).get(0).getIdLong(), Collections.singleton(Permission.VIEW_CHANNEL), null)

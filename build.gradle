@@ -25,7 +25,9 @@ application {
 repositories {
     mavenCentral()
     maven { url = uri("https://m2.chew.pro/snapshots") }
+    maven { url "https://arcanearts.jfrog.io/artifactory/archives" }
     maven { url "https://dl.cloudsmith.io/public/arcane/archive/maven/" }
+    mavenLocal()
 }
 
 dependencies {
@@ -45,8 +47,8 @@ dependencies {
     implementation 'commons-io:commons-io:2.11.0'
 
     //Cancer
-    implementation 'art.arcane:Amulet:22.7.18'
-    implementation 'com.github.ArcaneArts:Quill:1.1.3'
+//    implementation 'art.arcane:Amulet:23.5.1' // Issue with " Records requires ASM8 "
+    implementation 'com.github.ArcaneArts:Quill:1.1.8'
     annotationProcessor 'systems.manifold:manifold-ext:' + manifoldVersion
     testAnnotationProcessor 'systems.manifold:manifold-ext:' + manifoldVersion
     implementation 'systems.manifold:manifold-rt:' + manifoldVersion
@@ -58,10 +60,15 @@ dependencies {
 
 shadowJar {
     archiveClassifier.set('')
-    minimize()
+    minimize {
+        // Add the necessary packages and classes to exclude from minimization
+        exclude(dependency('org.slf4j:slf4j-api'))
+        exclude(dependency('org.slf4j:slf4j-simple'))
+    }
     configurations = [project.configurations.runtimeClasspath] // Change this line
     archiveFileName = "${projectName}-${projectVersion}.jar"
 }
+
 
 // Custom Output Task for Windows
 def registerCustomOutputTask(name, location) {

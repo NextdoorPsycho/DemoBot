@@ -1,4 +1,3 @@
- 
 package com.volmit.demobot.commands;
 
 import com.volmit.demobot.Core;
@@ -81,7 +80,8 @@ public class ListenerRegistry extends ListenerAdapter {
                 .map(cmdClass -> {
                     try {
                         return (ListenerAdapter) cmdClass.getConstructors()[0].newInstance();
-                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
+                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                             IllegalArgumentException e) {
                         e.printStackTrace();
                         Demo.debug("Failed to load command " + cmdClass.getName() + " with empty constructor!");
                     } catch (ArrayIndexOutOfBoundsException e) {
