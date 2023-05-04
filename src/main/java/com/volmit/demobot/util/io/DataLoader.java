@@ -47,6 +47,7 @@ public class DataLoader {
         cleaner.interrupt();
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends DataType> TypedLoader<T> getLoader(Class<T> t) {
         return (TypedLoader<T>) loaders.get(t);
     }

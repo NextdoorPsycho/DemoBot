@@ -18,11 +18,6 @@ import java.util.concurrent.TimeUnit;
 public class VolmitEmbed extends EmbedBuilder {
     private final Message message;
 
-    /*
-        Creates a new default VolmitEmbed object.
-        String `title` - the title of the embed
-        String `name` - the name greeted in the top of the embed
-     */
     public VolmitEmbed(String title, String name) {
         this.message = null;
         this.setAuthor("Requested by: " + name, null)
@@ -31,11 +26,6 @@ public class VolmitEmbed extends EmbedBuilder {
                 .setFooter(Core.get().botCompany, Core.get().botIMG);
     }
 
-    /*
-        Creates a new default VolmitEmbed object.
-        String `title` - the title of the embed
-        String `message` - the message used to greet the user with
-     */
     public VolmitEmbed(String title, Message message) {
         this.message = message;
         this.setAuthor("Requested by: " + message.getAuthor().getName(), null, message.getAuthor().getAvatarUrl())
@@ -45,10 +35,6 @@ public class VolmitEmbed extends EmbedBuilder {
                 .setTimestamp(new Date().toInstant());
     }
 
-    /*
-        Creates a new default VolmitEmbed object.
-        String `title` - the title of the embed
-     */
     public VolmitEmbed(String title) {
         this.message = null;
         this.setTitle(title)
@@ -56,11 +42,6 @@ public class VolmitEmbed extends EmbedBuilder {
                 .setFooter(Core.get().botCompany, Core.get().botIMG);
     }
 
-    /*
-        Creates a new shortened VolmitEmbed object.
-        String `title` - the title of the embed
-        boolean `useShort` - toggles footer
-     */
     public VolmitEmbed(String title, boolean useShort) {
         this.message = null;
         this.setTitle(title).setColor(Color.decode(Core.get().botColor));
@@ -69,10 +50,6 @@ public class VolmitEmbed extends EmbedBuilder {
         }
     }
 
-    /*
-        Creates a new default VolmitEmbed object.
-        This has no title (unless set later)
-     */
     public VolmitEmbed() {
         this.message = null;
         this.setColor(Color.decode(Core.get().botColor))

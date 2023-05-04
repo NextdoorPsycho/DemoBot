@@ -17,16 +17,51 @@ import java.io.File;
 import java.util.Objects;
 
 public class Demo extends ListenerAdapter {
-
     public static final IBotProvider provider = new BotProvider();
     @Getter
     private static DataLoader loader;
+
+    public static void main(String[] args) {
+        optimizeCores();
+        loader = new DataLoader(new FileSystemStorageAccess(new File("Data/BotData")));
+        System.out.println("Initializing");
+
+        initializeCore();
+        ListenerRegistry.All(getJDA()); // ALL COMMANDS ARE HERE
+        info("Registering Listeners");
+        info("Bot Server: " + Core.get().discordGuildID + " | Server Name: " + Objects.requireNonNull(getJDA().getGuildById(Core.get().discordGuildID)).getName() + " | Bot Name: " + Core.get().botName);
+
+        new Looper() {
+            @Override
+            protected long loop() {
+                Core.tick();
+                return 1000;
+            }
+        }.start();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(loader::close));
+    }
+
+    private static void initializeCore() {
+        Core.get().botID = getJDA().getSelfUser().getIdLong();
+        Core.get().botUser = getJDA().getUserById(Core.get().botID);
+        Core.get().botName = Objects.requireNonNull(Core.get().botUser).getName();
+    }
+
+    private static void optimizeCores() {
+        final int cores = Runtime.getRuntime().availableProcessors();
+        if (cores <= 1) {
+            System.out.println("Available Cores \"" + cores + "\", Attempting to set Parallelism Flag");
+            System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "1");
+            System.out.println("Parallelism Set!");
+        }
+    }
 
     public static JDA getJDA() {
         return provider.get().getJDA();
     }
 
-    private static void log(String tag, Object t) {
+    public static void log(String tag, Object t) {
         System.out.println("[" + tag + "]-> " + t);
     }
 
@@ -46,34 +81,6 @@ public class Demo extends ListenerAdapter {
         log("DEBUG", message);
     }
 
-
-    public static void main(String[] args) {
-        //This sets the threading priorities to work on Droplet :( This is not safe but it works
-        final int cores = Runtime.getRuntime().availableProcessors();
-        if (cores <= 1) {
-            System.out.println("Available Cores \"" + cores + "\", Attempting to set Parallelism Flag");
-            System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "1");
-            System.out.println("Parallelism Set!");
-        }
-
-        loader = new DataLoader(new FileSystemStorageAccess(new File("Data/BotData")));
-        System.out.println("Initializing");
-
-        Core.get().botID = getJDA().getSelfUser().getIdLong();
-        Core.get().botUser = getJDA().getUserById(Core.get().botID);
-        Core.get().botName = Objects.requireNonNull(Core.get().botUser).getName();
-        ListenerRegistry.All(getJDA()); // ALL COMMANDS ARE HERE
-
-        new Looper() {
-            @Override
-            protected long loop() {
-                Core.tick();
-                return 1000;
-            }
-        }.start();
-        Runtime.getRuntime().addShutdownHook(new Thread(loader::close));
-    }
-
     public static void shutdown() {
         System.out.println("Terminating the bot instance");
         getJDA().getPresence().setStatus(OnlineStatus.OFFLINE);
@@ -87,6 +94,4 @@ public class Demo extends ListenerAdapter {
         System.out.println(e.getJDA().getSelfUser().getAsTag() + Core.get().botOnReadyMessage);
         info("Bot has Started: Active Monitoring");
     }
-
-
 }
