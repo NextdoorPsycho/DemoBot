@@ -6,7 +6,6 @@ import com.jagrosh.jdautilities.command.SlashCommandEvent;
 import com.volmit.demobot.Core;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
 import java.util.ArrayList;

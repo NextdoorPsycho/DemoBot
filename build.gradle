@@ -6,18 +6,26 @@ plugins {
 }
 
 def manifoldVersion = '2023.1.5'
+def projectName = 'DemoBot' // Project Name
+def projectVersion = '1.0.0' // Project Version
+
+// ADD YOURSELF AS A NEW LINE IF YOU WANT YOUR OWN BUILD TASK GENERATED
+// ======================== WINDOWS =============================
+registerCustomOutputTask('Psycho', 'C://Users/brian/Desktop/DiscordBotTesting')
+// ========================== UNIX ==============================
+registerCustomOutputTaskUnix('PsychoLT', '/Users/brianfopiano/Desktop/REMOTES/Bots/DemoBot')
+// ==============================================================
 
 group 'com.volmit'
+version = projectVersion // Set the project version
 application {
     mainClass = 'com.volmit.demobot.Demo'
 }
-
 
 repositories {
     mavenCentral()
     maven { url = uri("https://m2.chew.pro/snapshots") }
     maven { url "https://dl.cloudsmith.io/public/arcane/archive/maven/" }
-
 }
 
 dependencies {
@@ -26,9 +34,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
 
     //Discord JDA stuff
-    implementation'pw.chew:jda-chewtils:2.0-SNAPSHOT'
+    implementation 'pw.chew:jda-chewtils:2.0-SNAPSHOT'
     implementation 'net.dv8tion:JDA:5.0.0-beta.8'
-
 
     //My things
     implementation 'org.slf4j:slf4j-api:2.0.3'
@@ -37,7 +44,7 @@ dependencies {
     implementation 'redis.clients:jedis:4.3.1'
     implementation 'commons-io:commons-io:2.11.0'
 
-    //Cancer, cancer, cancer.
+    //Cancer
     implementation 'art.arcane:Amulet:22.7.18'
     implementation 'com.github.ArcaneArts:Quill:1.1.3'
     annotationProcessor 'systems.manifold:manifold-ext:' + manifoldVersion
@@ -47,5 +54,29 @@ dependencies {
     // Dynamically Loaded
     implementation 'com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:1.4.2'
     implementation 'com.google.code.gson:gson:2.10'
+}
 
+shadowJar {
+    archiveClassifier.set('')
+    minimize()
+    configurations = [project.configurations.runtimeClasspath] // Change this line
+    archiveFileName = "${projectName}-${projectVersion}.jar"
+}
+
+// Custom Output Task for Windows
+def registerCustomOutputTask(name, location) {
+    tasks.register("buildTo${name}", Copy) {
+        dependsOn shadowJar
+        from shadowJar.archiveFile.get()
+        into location
+    }
+}
+
+// Custom Output Task for Unix
+def registerCustomOutputTaskUnix(name, location) {
+    tasks.register("buildTo${name}", Copy) {
+        dependsOn shadowJar
+        from shadowJar.archiveFile.get()
+        into location
+    }
 }

@@ -2,8 +2,8 @@
 package com.volmit.demobot.commands;
 
 
-import com.volmit.demobot.Demo;
 import com.volmit.demobot.Core;
+import com.volmit.demobot.Demo;
 import com.volmit.demobot.util.VolmitEmbed;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Message;
@@ -11,99 +11,86 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-
 import java.util.*;
-
+import java.util.stream.Collectors;
 
 public class VolmitCommand extends ListenerAdapter {
 
     @Getter
-    public String name;
+    private final String name;
     @Getter
-    public List<String> commands;
+    private final List<String> commands;
     @Getter
-    public List<String> roles;
+    private final List<String> roles;
     @Getter
-    public String description;
+    private final String description;
     @Getter
-    public boolean isSlashCommand;
+    private final boolean needsArguments;
     @Getter
-    public boolean needsArguments;
+    private final String example;
     @Getter
-    public String example;
+    private final String category;
     @Getter
-    public String category;
-    @Getter
-    public List<VolmitCommand> subcommands;
+    private final List<VolmitCommand> subcommands;
 
-    // Creator sets name, command aliases, requires any one of entered roles, and adds a description and example
-    public VolmitCommand(String name, String[] commands, String[] roles, String description, boolean needsArguments, String example) {
-        if (commands == null || commands.length == 0) commands = new String[]{name};
-        if (roles == null) roles = new String[]{};
+    public VolmitCommand(String name, List<String> commands, List<String> roles, String description, boolean needsArguments, String example) {
         this.name = name;
-        this.commands = Arrays.asList(commands);
-        this.roles = Arrays.asList(roles);
-        this.description = !description.equals("") ? description : "This command has no description";
+        this.commands = Optional.ofNullable(commands).orElse(Collections.singletonList(name));
+        this.roles = Optional.ofNullable(roles).orElse(Collections.emptyList());
+        this.description = !description.isEmpty() ? description : "This command has no description";
         this.needsArguments = needsArguments;
         this.example = example;
         this.category = null;
         this.subcommands = null;
     }
 
-
-
-    public VolmitCommand(String name, String[] commands, String[] roles, String description, boolean needsArguments, String category, VolmitCommand[] subcommands) {
-        if (commands == null || commands.length == 0) commands = new String[]{name};
-        if (roles == null) roles = new String[]{};
+    public VolmitCommand(String name, List<String> commands, List<String> roles, String description, boolean needsArguments, String category, List<VolmitCommand> subcommands) {
         this.name = name;
-        this.commands = Arrays.asList(commands);
-        this.roles = Arrays.asList(roles);
-        this.description = !description.equals("") ? description : "This command has no description";
+        this.commands = Optional.ofNullable(commands).orElse(Collections.singletonList(name));
+        this.roles = Optional.ofNullable(roles).orElse(Collections.emptyList());
+        this.description = !description.isEmpty() ? description : "This command has no description";
         this.needsArguments = needsArguments;
         this.example = null;
         this.category = category;
-        this.subcommands = Arrays.asList(subcommands);
+        this.subcommands = Optional.ofNullable(subcommands).orElse(Collections.emptyList());
     }
 
-    // Override me!
     public void handle(List<String> args, MessageReceivedEvent e) {
         e.getMessage().reply("The command you ran is improperly written. The handle() must be overwritten.").complete();
     }
 
-
-
+    @Override
     public void onMessageReceived(MessageReceivedEvent e) {
         if (e.getAuthor().isBot()) return;
         if (noPermission(Objects.requireNonNull(e.getMember()).getRoles(), e.getAuthor().getId())) return;
         List<String> args = new LinkedList<>(Arrays.asList(e.getMessage().getContentRaw().replace(Core.get().botPrefix, "").split(" ")));
         List<String> argc = new LinkedList<>(Arrays.asList(e.getMessage().getContentRaw().split(" ")));
-        if (!argc.get(0).contains(Core.get().botPrefix)) return; // ignore
+        if (!argc.get(0).contains(Core.get().botPrefix)) return;
         if (!checkCommand(args.get(0))) return;
         continueToHandle(args, e);
     }
 
-    // Handle
     public void continueToHandle(List<String> args, MessageReceivedEvent e) {
-        if (getRoles() != null && getRoles().size() != 0) {
+        if (!getRoles().isEmpty()) {
             if (noPermission(Objects.requireNonNull(e.getMember()).getRoles(), e.getAuthor().getId())) return;
         }
         Demo.info("Command passed checks: " + getName());
         if (!needsArguments) {
             handle(null, e);
         } else if (getCategory() != null) {
-            e.getMessage().delete().queue(); // delete the sent message
+            e.getMessage().delete().queue();
             if (args.size() < 2) {
                 sendCategoryHelp(e.getMessage());
             } else {
-                StringBuilder subs = new StringBuilder("Subs: ");
-                for (VolmitCommand cmd : getSubcommands()) subs.append(cmd.getName()).append((" "));
-                Demo.info(subs.toString());
-                for (VolmitCommand sub : getSubcommands()) {
-                    for (String commandAlias : sub.getCommands()) {
-                        if (commandAlias.equalsIgnoreCase(args.get(1))) {
-                            return;
-                        }
-                    }
+                String subs = getSubcommands().stream()
+                        .map(VolmitCommand::getName)
+                        .collect(Collectors.joining(" "));
+                Demo.info("Subs: " + subs);
+                boolean subCommandFound = getSubcommands().stream()
+                        .flatMap(sub -> sub.getCommands().stream())
+                        .anyMatch(commandAlias -> commandAlias.equalsIgnoreCase(args.get(1)));
+                if (!subCommandFound) {
+                    return;
                 }
             }
         } else if (args.size() < 2) {
@@ -113,60 +100,42 @@ public class VolmitCommand extends ListenerAdapter {
             handle(args, e);
         }
     }
+
     private boolean noPermission(List<Role> roles, String ID) {
-        if (getRoles() != null && getRoles().size() != 0) {
-            for (Role userRole : roles) {
-                String userRoleName = userRole.getName();
-                for (String needsRole : getRoles()) {
-                    if (needsRole.equals(userRoleName)) {
-                        return false;
-                    }
-                }
-                if (ID.equals(userRole.getName())) {
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
-        return true;
-    }
-    private boolean checkCommand(String command) {
-        if (command.equalsIgnoreCase(name)) return true;
-        for (String cmd : getCommands()) {
-            if (command.equalsIgnoreCase(cmd)) {
-                return true;
-            }
+        if (!getRoles().isEmpty()) {
+            return roles.stream()
+                    .map(Role::getName)
+                    .noneMatch(userRoleName -> getRoles().contains(userRoleName) || ID.equals(userRoleName));
         }
         return false;
     }
+
+    private boolean checkCommand(String command) {
+        return command.equalsIgnoreCase(name) || getCommands().stream().anyMatch(cmd -> command.equalsIgnoreCase(cmd));
+    }
+
     public void sendHelp(Message message) {
         VolmitEmbed embed = new VolmitEmbed(Core.get().botPrefix + getName() + " Command Usage", message);
         embed.setFooter("All Non-SubCommands are prefaced with the prefix: `" + Core.get().botPrefix + "`");
-        String cmd = /*Kit.get().BotPrefix +*/ getName().substring(0, 1).toUpperCase() + getName().substring(1);
+        String cmd = getName().substring(0, 1).toUpperCase() + getName().substring(1);
         if (getCommands().size() < 2) {
             embed.addField(cmd, "`*no aliases*`\n" + getDescription(), true);
         } else {
-            embed.addField(
-                    cmd,
-                    "\n`" + Core.get().botPrefix +
-                            (getCommands().size() == 2 ?
-                                    getCommands().get(1) :
-                                    " " + getCommands().subList(1, getCommands().size()).toString()
-                                            .replace("[", "").replace("]", "")) +
-                            "`\n" + getDescription(),
-                    true
-            );
+            String aliases = getCommands().subList(1, getCommands().size())
+                    .toString()
+                    .replace("[", "").replace("]", "");
+            embed.addField(cmd, "\n`" + Core.get().botPrefix + aliases + "`\n" + getDescription(), true);
         }
         if (getExample() != null) {
             embed.addField("**Usage**", "`" + Core.get().botPrefix + getExample() + "`", false);
         }
-        if (getRoles() != null && getRoles().size() != 0) {
+        if (!getRoles().isEmpty()) {
             embed.addField("**Permitted for role(s)**", "`" + getRoles().toString() + "`", false);
         }
         embed.setFooter(Core.get().botCompany, Core.get().botIMG);
         embed.send(message);
     }
+
     protected void sendCategoryHelp(Message message) {
         VolmitEmbed embed = new VolmitEmbed(getName() + " Command Usage", message);
         String menuName = getName();
@@ -178,18 +147,12 @@ public class VolmitCommand extends ListenerAdapter {
             } else {
                 String body =
                         "\n`" +
-                                (command.getCommands().size() == 2 ?
-                                        command.getCommands().get(1) :
-                                        " " + command.getCommands().subList(1, command.getCommands().size()))
-                                        .replace("[", "").replace("]", "") +
+                                command.getCommands().subList(1, command.getCommands().size())
+                                        .toString().replace("[", "").replace("]", "") +
                                 "`\n" +
                                 command.getDescription() +
                                 (command.getExample() != null ? "\n**usage:**\n`" + Core.get().botPrefix + command.getExample() + "`" : "");
-                embed.addField(
-                        cmd,
-                        body,
-                        true
-                );
+                embed.addField(cmd, body, true);
             }
         });
         embed.setFooter(Core.get().botCompany, Core.get().botIMG);

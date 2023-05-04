@@ -21,8 +21,8 @@ public class CommandCore extends VolmitCommand {
     public CommandCore(JDA jda) {
         super(
                 "Commands",
-                new String[]{"commands", "?", "help"},
-                new String[]{}, // Always permitted if empty. User must have at least one if specified.
+                List.of("commands", "?", "help"),
+                List.of(),
                 "Sends the command help page (this one) `",
                 false,
                 null
