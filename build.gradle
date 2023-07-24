@@ -5,7 +5,6 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.0.0"
 }
 
-def manifoldVersion = '2023.1.5'
 def projectName = 'DemoBot' // Project Name
 def projectVersion = '1.0.0' // Project Version
 
@@ -37,7 +36,7 @@ dependencies {
 
     //Discord JDA stuff
     implementation 'pw.chew:jda-chewtils:2.0-SNAPSHOT'
-    implementation 'net.dv8tion:JDA:5.0.0-beta.8'
+    implementation 'net.dv8tion:JDA:5.0.0-beta.12'
 
     //My things
     implementation 'org.slf4j:slf4j-api:2.0.3'
@@ -49,9 +48,9 @@ dependencies {
     //Cancer
 //    implementation 'art.arcane:Amulet:23.5.1' // Issue with " Records requires ASM8 "
     implementation 'com.github.ArcaneArts:Quill:1.1.8'
-    annotationProcessor 'systems.manifold:manifold-ext:' + manifoldVersion
-    testAnnotationProcessor 'systems.manifold:manifold-ext:' + manifoldVersion
-    implementation 'systems.manifold:manifold-rt:' + manifoldVersion
+    annotationProcessor 'systems.manifold:manifold-ext:2023.1.10'
+    testAnnotationProcessor 'systems.manifold:manifold-ext:2023.1.10'
+    implementation 'systems.manifold:manifold-rt:2023.1.10'
 
     // Dynamically Loaded
     implementation 'com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:1.4.2'
