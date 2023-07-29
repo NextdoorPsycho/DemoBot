@@ -5,7 +5,8 @@ import com.volmit.demobot.Demo;
 import com.volmit.demobot.commands.prefix.CommandCore;
 import com.volmit.demobot.commands.prefix.Passive;
 import com.volmit.demobot.commands.prefix.Shutdown;
-import com.volmit.demobot.commands.slash.TicketMasterButton;
+import com.volmit.demobot.commands.slash.tickets.TicketMasterButton;
+import com.volmit.demobot.commands.slash.setup.RoleManager;
 import com.volmit.demobot.util.instance.SkipCommand;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -41,6 +42,7 @@ public class ListenerRegistry extends ListenerAdapter {
 
         //Listeners
         jda.addEventListener(new TicketMasterButton());
+        jda.addEventListener(new RoleManager());
 
         //END
         jda.addEventListener(new CommandCore(jda)); // [ DONT TOUCH THESE  LISTENERS ]

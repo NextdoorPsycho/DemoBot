@@ -1,4 +1,4 @@
-package com.volmit.demobot.commands.slash;
+package com.volmit.demobot.commands.slash.tickets;
 
 
 import art.arcane.quill.execution.J;
