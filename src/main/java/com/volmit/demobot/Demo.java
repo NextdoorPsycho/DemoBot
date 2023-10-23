@@ -17,47 +17,19 @@ import java.io.File;
 import java.util.Objects;
 
 public class Demo extends ListenerAdapter {
-
+    public static final IBotProvider provider = new BotProvider();
     @Getter
     private static DataLoader loader;
-    public static JDA getJDA() {
-        return provider.get().getJDA();
-    }
-    public static final IBotProvider provider = new BotProvider();
-    private static void log(String tag, Object t) {
-        System.out.println("[" + tag + "]-> " + t);
-    }
-    public static void warn(Object message) {
-        log("WARN", message);
-    }
-    public static void info(Object message) {
-        log("INFO", message);
-    }
-    public static void error(Object message) {
-        log("ERROR", message);
-    }
-    public static void debug(Object message) {
-        log("DEBUG", message);
-    }
-
-
 
     public static void main(String[] args) {
-        //This sets the threading priorities to work on Droplet :( This is not safe but it works
-        final int cores = Runtime.getRuntime().availableProcessors();
-        if (cores <= 1) {
-            System.out.println("Available Cores \"" + cores + "\", Attempting to set Parallelism Flag");
-            System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "1");
-            System.out.println("Parallelism Set!");
-        }
-
+        optimizeCores();
         loader = new DataLoader(new FileSystemStorageAccess(new File("Data/BotData")));
         System.out.println("Initializing");
 
-        Core.get().botID = getJDA().getSelfUser().getIdLong();
-        Core.get().botUser = getJDA().getUserById(Core.get().botID);
-        Core.get().botName = Objects.requireNonNull(Core.get().botUser).getName();
+        initializeCore();
         ListenerRegistry.All(getJDA()); // ALL COMMANDS ARE HERE
+        info("Registering Listeners");
+        info("Bot Server: " + Core.get().discordGuildID + " | Server Name: " + Objects.requireNonNull(getJDA().getGuildById(Core.get().discordGuildID)).getName() + " | Bot Name: " + Core.get().botName);
 
         new Looper() {
             @Override
@@ -66,15 +38,47 @@ public class Demo extends ListenerAdapter {
                 return 1000;
             }
         }.start();
+
         Runtime.getRuntime().addShutdownHook(new Thread(loader::close));
     }
 
+    private static void initializeCore() {
+        Core.get().botID = getJDA().getSelfUser().getIdLong();
+        Core.get().botUser = getJDA().getUserById(Core.get().botID);
+        Core.get().botName = Objects.requireNonNull(Core.get().botUser).getName();
+    }
 
-    @Override
-    public void onReady(@NonNull ReadyEvent e) {
-        e.getJDA().updateCommands().queue();
-        System.out.println(e.getJDA().getSelfUser().getAsTag()+ Core.get().botOnReadyMessage);
-        info("Bot has Started: Active Monitoring");
+    private static void optimizeCores() {
+        final int cores = Runtime.getRuntime().availableProcessors();
+        if (cores <= 1) {
+            System.out.println("Available Cores \"" + cores + "\", Attempting to set Parallelism Flag");
+            System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "1");
+            System.out.println("Parallelism Set!");
+        }
+    }
+
+    public static JDA getJDA() {
+        return provider.get().getJDA();
+    }
+
+    public static void log(String tag, Object t) {
+        System.out.println("[" + tag + "]-> " + t);
+    }
+
+    public static void warn(Object message) {
+        log("WARN", message);
+    }
+
+    public static void info(Object message) {
+        log("INFO", message);
+    }
+
+    public static void error(Object message) {
+        log("ERROR", message);
+    }
+
+    public static void debug(Object message) {
+        log("DEBUG", message);
     }
 
     public static void shutdown() {
@@ -84,5 +88,10 @@ public class Demo extends ListenerAdapter {
         System.exit(1);
     }
 
-
+    @Override
+    public void onReady(@NonNull ReadyEvent e) {
+        e.getJDA().updateCommands().queue();
+        System.out.println(e.getJDA().getSelfUser().getAsTag() + Core.get().botOnReadyMessage);
+        info("Bot has Started: Active Monitoring");
+    }
 }

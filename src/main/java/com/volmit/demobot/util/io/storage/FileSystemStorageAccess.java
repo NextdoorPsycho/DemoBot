@@ -1,10 +1,8 @@
- 
 package com.volmit.demobot.util.io.storage;
 
 import art.arcane.quill.io.IO;
 import com.volmit.demobot.Demo;
 import com.volmit.demobot.util.io.StorageAccess;
-
 
 import java.io.File;
 import java.io.IOException;

@@ -1,7 +1,8 @@
-package com.volmit.demobot.commands;
+package com.volmit.demobot.commands.prefix;
 
-import com.volmit.demobot.Demo;
 import com.volmit.demobot.Core;
+import com.volmit.demobot.Demo;
+import com.volmit.demobot.commands.VolmitCommand;
 import com.volmit.demobot.util.VolmitEmbed;
 import com.volmit.demobot.util.instance.SkipCommand;
 import net.dv8tion.jda.api.JDA;
@@ -20,8 +21,8 @@ public class CommandCore extends VolmitCommand {
     public CommandCore(JDA jda) {
         super(
                 "Commands",
-                new String[]{"commands", "?", "help"},
-                new String[]{}, // Always permitted if empty. User must have at least one if specified.
+                List.of("commands", "?", "help"),
+                List.of(),
                 "Sends the command help page (this one) `",
                 false,
                 null

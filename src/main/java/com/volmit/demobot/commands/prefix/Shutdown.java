@@ -1,8 +1,8 @@
 package com.volmit.demobot.commands.prefix;
 
+import com.volmit.demobot.Core;
 import com.volmit.demobot.Demo;
 import com.volmit.demobot.commands.VolmitCommand;
-import com.volmit.demobot.Core;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.List;
@@ -14,8 +14,8 @@ public class Shutdown extends VolmitCommand {
     public Shutdown() {
         super(
                 "stop",
-                new String[]{"stop", "kill", "s"},
-                new String[]{Core.get().adminControllerRole},
+                List.of("stop", "shutdown", "die", "kill", "end"),
+                List.of(Core.get().adminControllerRole),
                 "Stops the Bot boi",
                 false,
                 null

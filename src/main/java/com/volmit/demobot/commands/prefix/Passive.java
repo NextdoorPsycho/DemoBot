@@ -13,8 +13,8 @@ public class Passive extends VolmitCommand {
     public Passive() {
         super(
                 "passive",
-                new String[]{"passives", "psv"},
-                new String[]{}, // Always permitted if empty. User must have at least one if specified.
+                List.of("passives", "psv"),
+                List.of(),
                 "This command shows the passive things im doing while on your server",
                 false,
                 null
