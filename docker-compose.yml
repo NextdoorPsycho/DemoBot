@@ -1,0 +1,8 @@
+services:
+  arcane-demobot:
+    build: .
+    container_name: arcane-demobot
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config
+    restart: unless-stopped

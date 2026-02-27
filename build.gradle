@@ -1,88 +1,208 @@
 plugins {
     id 'java'
     id 'application'
-    id 'io.freefair.lombok' version '5.2.1'
-    id "com.github.johnrengelman.shadow" version "7.0.0"
+    id 'jacoco'
+    id 'checkstyle'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'com.diffplug.spotless' version '6.25.0'
 }
 
-def projectName = 'DemoBot' // Project Name
-def projectVersion = '1.0.0' // Project Version
+def gradleJvmMajor = JavaVersion.current().majorVersion.toInteger()
+if (gradleJvmMajor < 21 || gradleJvmMajor > 23) {
+    throw new GradleException(
+            """
+ArcaneDemoBot requires Gradle to run on Java 21-23.
+Current Gradle JVM: ${JavaVersion.current()}
 
-// ADD YOURSELF AS A NEW LINE IF YOU WANT YOUR OWN BUILD TASK GENERATED
-// ======================== WINDOWS =============================
-registerCustomOutputTask('Psycho', 'C://Users/brian/Desktop/DiscordBotTesting')
-// ========================== UNIX ==============================
-registerCustomOutputTaskUnix('PsychoLT', '/Users/brianfopiano/Desktop/REMOTES/Bots/DemoBot')
-// ==============================================================
+Fix:
+1) In IntelliJ: Settings -> Build Tools -> Gradle -> Gradle JVM -> choose Java 21
+2) CLI: set JAVA_HOME to JDK 21 before running ./gradlew
+"""
+    )
+}
 
-group 'com.volmit'
-version = projectVersion // Set the project version
+group = 'art.arcane'
+version = '2.0.0'
+def fatJarName = "ArcaneDemoBot-${project.version}.jar"
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
 application {
-    mainClass = 'com.volmit.demobot.Demo'
+    mainClass = 'art.arcane.demobot.app.BotApplication'
 }
+
+def botConfigPath = providers.gradleProperty('botConfig').orElse('config/bot.toml')
+def discordToken = providers.gradleProperty('discordToken')
+def ownerIds = providers.gradleProperty('ownerIds')
+def logLevel = providers.gradleProperty('logLevel')
+def dataDir = providers.gradleProperty('dataDir')
 
 repositories {
     mavenCentral()
-    maven { url = uri("https://m2.chew.pro/snapshots") }
-    maven { url "https://arcanearts.jfrog.io/artifactory/archives" }
-    maven { url "https://dl.cloudsmith.io/public/arcane/archive/maven/" }
-    mavenLocal()
 }
 
 dependencies {
-    // Core dependencies
-    compileOnly 'org.projectlombok:lombok:1.18.24'
-    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    implementation 'net.dv8tion:JDA:5.0.0'
+    implementation 'org.slf4j:slf4j-api:2.0.13'
+    implementation 'ch.qos.logback:logback-classic:1.5.6'
+    implementation 'org.tomlj:tomlj:1.1.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.1'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.1'
 
-    //Discord JDA stuff
-    implementation 'pw.chew:jda-chewtils:2.0-SNAPSHOT'
-    implementation 'net.dv8tion:JDA:5.0.0-beta.12'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testImplementation 'org.assertj:assertj-core:3.26.0'
+    testImplementation 'org.mockito:mockito-core:5.12.0'
+}
 
-    //My things
-    implementation 'org.slf4j:slf4j-api:2.0.3'
-    implementation 'org.slf4j:slf4j-simple:2.0.3'
-    implementation 'org.jsoup:jsoup:1.15.3'
-    implementation 'redis.clients:jedis:4.3.1'
-    implementation 'commons-io:commons-io:2.11.0'
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
 
-    //Cancer
-//    implementation 'art.arcane:Amulet:23.5.1' // Issue with " Records requires ASM8 "
-    implementation 'com.github.ArcaneArts:Quill:1.1.8'
-    annotationProcessor 'systems.manifold:manifold-ext:2023.1.10'
-    testAnnotationProcessor 'systems.manifold:manifold-ext:2023.1.10'
-    implementation 'systems.manifold:manifold-rt:2023.1.10'
+tasks.withType(JavaExec).configureEach {
+    if (discordToken.present) {
+        systemProperty 'demobot.discordToken', discordToken.get()
+    }
+    if (ownerIds.present) {
+        systemProperty 'demobot.ownerIds', ownerIds.get()
+    }
+    if (logLevel.present) {
+        systemProperty 'demobot.logLevel', logLevel.get()
+    }
+    if (dataDir.present) {
+        systemProperty 'demobot.dataDir', dataDir.get()
+    }
+    systemProperty 'demobot.config', botConfigPath.get()
+}
 
-    // Dynamically Loaded
-    implementation 'com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:1.4.2'
-    implementation 'com.google.code.gson:gson:2.10'
+tasks.named('run', JavaExec).configure {
+    group = 'application'
+    description = 'Run Arcane DemoBot. Optional: -PdiscordToken=... -PbotConfig=config/bot.toml'
+    standardInput = System.in
+}
+
+tasks.register('runBot', JavaExec) {
+    group = 'application'
+    description = 'Run Arcane DemoBot with optional overrides: -PdiscordToken=... -PbotConfig=...'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = application.mainClass
+    standardInput = System.in
+}
+
+tasks.register('runBotDebug', JavaExec) {
+    group = 'application'
+    description = 'Run Arcane DemoBot with remote debug enabled on port 5005'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = application.mainClass
+    standardInput = System.in
+    jvmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'
 }
 
 shadowJar {
     archiveClassifier.set('')
-    minimize {
-        // Add the necessary packages and classes to exclude from minimization
-        exclude(dependency('org.slf4j:slf4j-api'))
-        exclude(dependency('org.slf4j:slf4j-simple'))
-    }
-    configurations = [project.configurations.runtimeClasspath] // Change this line
-    archiveFileName = "${projectName}-${projectVersion}.jar"
+    archiveFileName = fatJarName
 }
 
+tasks.register('buildLocal', Copy) {
+    group = 'development'
+    description = 'Build and copy Arcane DemoBot jar into build/targets/local as ArcaneDemoBot.jar'
+    dependsOn tasks.named('shadowJar')
+    from layout.buildDirectory.file("libs/${fatJarName}")
+    into layout.buildDirectory.dir('targets/local')
+    rename { String ignored -> 'ArcaneDemoBot.jar' }
+}
 
-// Custom Output Task for Windows
-def registerCustomOutputTask(name, location) {
-    tasks.register("buildTo${name}", Copy) {
-        dependsOn shadowJar
-        from shadowJar.archiveFile.get()
-        into location
+tasks.register('buildTarget') {
+    group = 'development'
+    description = 'Build and copy Arcane DemoBot jar to -PtargetDir=<path> (optional -PtargetName=ArcaneDemoBot.jar)'
+    dependsOn tasks.named('shadowJar')
+    doLast {
+        def targetDir = providers.gradleProperty('targetDir').orNull
+        if (targetDir == null || targetDir.trim().isEmpty()) {
+            throw new GradleException('Missing -PtargetDir=<absolute-or-relative-path> for buildTarget task')
+        }
+
+        def targetName = providers.gradleProperty('targetName').orElse('ArcaneDemoBot.jar').get()
+        copy {
+            from layout.buildDirectory.file("libs/${fatJarName}")
+            into file(targetDir)
+            rename { String ignored -> targetName }
+        }
+        logger.lifecycle("Copied ${fatJarName} to ${file(targetDir).absolutePath}/${targetName}")
     }
 }
 
-// Custom Output Task for Unix
-def registerCustomOutputTaskUnix(name, location) {
-    tasks.register("buildTo${name}", Copy) {
-        dependsOn shadowJar
-        from shadowJar.archiveFile.get()
-        into location
+def registerCustomOutputTask = { String name, String outputPath ->
+    if (!System.getProperty('os.name').toLowerCase().contains('windows')) {
+        return
     }
+    tasks.register("build${name}", Copy) {
+        group = 'development'
+        description = "Build and copy Arcane DemoBot jar to ${outputPath}"
+        outputs.upToDateWhen { false }
+        dependsOn tasks.named('shadowJar')
+        from layout.buildDirectory.file("libs/${fatJarName}")
+        into file(outputPath)
+        rename { String ignored -> 'ArcaneDemoBot.jar' }
+    }
+}
+
+def registerCustomOutputTaskUnix = { String name, String outputPath ->
+    if (System.getProperty('os.name').toLowerCase().contains('windows')) {
+        return
+    }
+    tasks.register("build${name}", Copy) {
+        group = 'development'
+        description = "Build and copy Arcane DemoBot jar to ${outputPath}"
+        outputs.upToDateWhen { false }
+        dependsOn tasks.named('shadowJar')
+        from layout.buildDirectory.file("libs/${fatJarName}")
+        into file(outputPath)
+        rename { String ignored -> 'ArcaneDemoBot.jar' }
+    }
+}
+
+// Named build targets (edit these paths for your machine)
+// ======================== WINDOWS =============================
+//registerCustomOutputTask('Psycho', 'C://Dan/MinecraftDevelopment/Server/plugins')
+// ========================== UNIX ==============================
+registerCustomOutputTaskUnix('PsychoLT', '/Users/brianfopiano/Desktop/DiscordBotCrap')
+// ==============================================================
+
+tasks.named('build') {
+    dependsOn tasks.named('shadowJar')
+}
+
+spotless {
+    java {
+        target 'src/**/*.java'
+        googleJavaFormat('1.22.0')
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+}
+
+checkstyle {
+    toolVersion = '10.17.0'
+    configFile = file('config/checkstyle/checkstyle.xml')
+}
+
+jacoco {
+    toolVersion = '0.8.12'
+}
+
+tasks.named('jacocoTestReport') {
+    dependsOn tasks.named('test')
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+tasks.named('check') {
+    dependsOn tasks.named('spotlessCheck')
+    dependsOn tasks.named('jacocoTestReport')
 }

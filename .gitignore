@@ -1,10 +1,6 @@
-
-Data/
-
-.gradle/buildOutputCleanup/
-
-.idea/
-
 .gradle/
-
 build/
+.idea/
+data/
+Data/
+config/bot.toml
